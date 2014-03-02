@@ -11,7 +11,7 @@
 			"file": "Assets/JS/game.js",
 			"settings":
 			{
-				"buffer_size": 551,
+				"buffer_size": 841,
 				"line_ending": "Windows"
 			}
 		}
@@ -87,23 +87,23 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 551,
+						"buffer_size": 841,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								538,
-								538
+								681,
+								681
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.x": -0.0,
+						"translation.y": 135.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
