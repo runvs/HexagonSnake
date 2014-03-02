@@ -3,6 +3,18 @@
 	{
 		"selected_items":
 		[
+			[
+				"wor",
+				"WorldSizeX"
+			],
+			[
+				"Wo",
+				"WorldSizeX"
+			],
+			[
+				"input",
+				"inputTimer"
+			]
 		]
 	},
 	"buffers":
@@ -11,7 +23,7 @@
 			"file": "Assets/JS/game.js",
 			"settings":
 			{
-				"buffer_size": 841,
+				"buffer_size": 2155,
 				"line_ending": "Windows"
 			}
 		}
@@ -47,7 +59,7 @@
 	],
 	"find":
 	{
-		"height": 0.0
+		"height": 23.0
 	},
 	"find_in_files":
 	{
@@ -61,6 +73,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"image"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -87,23 +100,23 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 841,
+						"buffer_size": 2155,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								681,
-								681
+								339,
+								339
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
-						"translation.x": -0.0,
-						"translation.y": 135.0,
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -114,7 +127,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 0.0
+		"height": 23.0
 	},
 	"input":
 	{
@@ -150,7 +163,7 @@
 	"project": "HexagonSnake.sublime-project",
 	"replace":
 	{
-		"height": 0.0
+		"height": 42.0
 	},
 	"save_all_on_build": true,
 	"select_file":
