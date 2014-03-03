@@ -85,7 +85,7 @@ function getInput()
 
  	if(game.time.now >inputTimer)
  	{
- 		inputTimer = game.time.now + 250;
+ 		inputTimer = game.time.now + config.INPUT_INCREMENT;
 	    if (cursors.right.isDown)
 	    {
 	    	player1Direction++;
