@@ -23,11 +23,11 @@ var hexagonParameters = {};
 var hexagons = [];
 
 DirectionEnum = {
-    NORTH : 0,
+    NORTH     : 0,
     NORTHEAST : 1,
-    SOUTEAST : 2,
-    SOUTH : 3,
-    SOUTHWEST :4,
+    SOUTHEAST : 2,
+    SOUTH     : 3,
+    SOUTHWEST : 4,
     NORTHWEST : 5
 }
 
@@ -168,7 +168,7 @@ function DoPlayerMovement()
 		{
 			MovePlayer1NorthEast();
 		}
-		else if(player1Direction == DirectionEnum.SOUTEAST)
+		else if(player1Direction == DirectionEnum.SOUTHEAST)
 		{
 			MovePlayer1SouthEast();
 		}
