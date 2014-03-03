@@ -1,67 +1,53 @@
+var config =
+{
+    HEXAGON_SIZE: 50,
+    WORLD_SIZE:
+    {
+        x: 15,
+        y: 9
+    }
+};
 
-var game = new Phaser.Game(800, 600, '', Phaser.AUTO, { preload: preload, create: create, update: update, render: render });
-
-var image;
+var game;
+var player;
 var cursors;
 
-var posX = 1;
-var posY = 1;
-var WorldSizeX = 15;
-var WorldSizeY = 15;
+var posX = 0;
+var posY = 0;
 
-var hexagonSize = 50;
 var inputTimer;
 
-var b = hexagonSize;
-var s = b/2.0;
-var h = b/4.0;
-var r = b/2;
-var a = 2*r;
+var hexagonParameters = {};
+var hexagons = [];
 
 function preload()
 {
 	game.load.image('player', 'Assets/GFX/player.png');
 }
 
-
-
 function create()
 {
+    // Set hexagon parameters
+    hexagonParameters.b = 50;
+    hexagonParameters.s = hexagonParameters.b / 2.0;
+    hexagonParameters.h = hexagonParameters.b / 4.0;
+    hexagonParameters.r = hexagonParameters.b / 2;
+    hexagonParameters.a = 2 * hexagonParameters.r;
 
-	var graphics = game.add.graphics(0,0);
+	
     // set a fill and line style
-    
-    
 
-	for (var i = 1; i < WorldSizeX+1; i++) 
+	for (var i = 0; i < config.WORLD_SIZE.x + 1; i++) 
 	{
-		for (var j = 1; j < WorldSizeY+1; j++) 
+		for (var j = 0; j < config.WORLD_SIZE.y + 1; j++) 
 		{
-			var offX = i*b;
-			var offY = j*b + j*h;
-			if(i%2==1)
-			{
-				offY += 0.5 * b;
-				offX += 0;
-			}
-			
-		    graphics.beginFill(0xFF0000);
-		    graphics.lineStyle(1, 0xFF0000, 1);
-		    // draw a shape
-			graphics.moveTo(offX+h,offY);
-		    graphics.lineTo(offX+h+s, offY);
-		    graphics.lineTo(offX+b, offY+r);
-		    graphics.lineTo(offX+h+s, offY +b);
-		    graphics.lineTo(offX+h, offY +b);
-		    graphics.lineTo(offX, offY +r);
-		    graphics.lineTo(offX+h, offY);
-		     graphics.endFill();
+			hexagons.push(new Hexagon(i, j, game, hexagonParameters));
 		}
 	}
 
 
 
-	image = game.add.sprite(0, 0, 'player');
+	player = game.add.sprite(0, 0, 'player');
 	//image.anchor = new Phaser.Point(x=0.5, y=0.5);
 	cursors = game.input.keyboard.createCursorKeys();
 	inputTimer = 0;
@@ -77,7 +63,7 @@ function getInput()
 	if (cursors.up.isDown)
     {
     	DoInputTimer();
-    	if(posY>1)
+    	if(posY >= 1)
     	{
         	posY -= 1;
     	}
@@ -85,7 +71,7 @@ function getInput()
 	else if (cursors.down.isDown)
     {
     	DoInputTimer();
-    	if(posY<WorldSizeY)
+    	if(posY < config.WORLD_SIZE.y)
     	{
         	posY += 1;
         }
@@ -94,7 +80,7 @@ function getInput()
     if (cursors.left.isDown)
     {
     	DoInputTimer();
-    	if(posX > 1)
+    	if(posX >= 1)
     	{
         	posX -= 1;	
     	}
@@ -102,7 +88,7 @@ function getInput()
 	else if (cursors.right.isDown)
     {
     	DoInputTimer();
-    	if(posX<WorldSizeX)
+    	if(posX < config.WORLD_SIZE.x)
     	{
         	posX += 1;
         }
@@ -119,16 +105,16 @@ function update()
 	{
 		inputTimer -= game.time.elapsed;
 	}
-	image.x = posX * hexagonSize;
+	player.x = posX * config.HEXAGON_SIZE;
 	
 
 	if(posX%2==0)
 	{
-		image.y = posY  * hexagonSize + posY *h;
+		player.y = posY  * config.HEXAGON_SIZE + posY * hexagonParameters.h;
 	}
 	else 
 	{
-		image.y = (posY + 0.5) * hexagonSize + posY *h;
+		player.y = (posY + 0.5) * config.HEXAGON_SIZE + posY * hexagonParameters.h;
 	}
 
 
@@ -140,4 +126,9 @@ function update()
 function render()
 {
 
+}
+
+window.onload = function()
+{
+    game = new Phaser.Game(800, 600, '', Phaser.AUTO, { preload: preload, create: create, update: update, render: render });
 }
