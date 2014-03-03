@@ -191,15 +191,16 @@ function DoPlayerMovement()
 
 function update()
 {
-	player.x = playerTrail[0].x * config.HEXAGON_SIZE + (config.HEXAGON_SIZE / 2);
+    // whatever this +1 comes from...?
+	player.x = playerTrail[0].x * (config.HEXAGON_SIZE +1) + (hexagonParameters.h);
 
 	if(playerTrail[0].x % 2 == 0)
 	{
-		player.y = playerTrail[0].y  * config.HEXAGON_SIZE + playerTrail[0].y * hexagonParameters.h;
+		player.y = playerTrail[0].y  * (config.HEXAGON_SIZE+1) + playerTrail[0].y * hexagonParameters.h;
 	}
 	else 
 	{
-		player.y = (playerTrail[0].y + 0.5) * config.HEXAGON_SIZE + playerTrail[0].y * hexagonParameters.h;
+		player.y = (playerTrail[0].y + 0.61) * (config.HEXAGON_SIZE+1) + playerTrail[0].y * hexagonParameters.h;
 	}
 
 	getInput();

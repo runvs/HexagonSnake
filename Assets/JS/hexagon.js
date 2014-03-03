@@ -10,12 +10,12 @@ function Hexagon(x, y, game, p)
     
     if(this.x % 2 == 1)
     {
-        offY += 0.5 * p.size;
+        offY += 0.61 * p.size;
         offX += 0;
     }
     
     graphics.beginFill(0xFF0000);
-    graphics.lineStyle(1, 0xFF0000, 1);
+    graphics.lineStyle(10, 0xFF0000, 1);
     
     // Draw the hexagon shape
     graphics.moveTo(offX + p.h,       offY);
