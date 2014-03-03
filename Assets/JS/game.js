@@ -31,7 +31,7 @@ DirectionEnum = {
 
 var player1Direction = DirectionEnum.NORTHWEST;
 var posX = 0;
-var posY = 0;
+var posY = 1;
 
 function preload()
 {
@@ -41,48 +41,28 @@ function preload()
 function create()
 {
     // Set hexagon parameters
-    hexagonParameters.b = 50;
-    hexagonParameters.s = hexagonParameters.b / 2.0;
-    hexagonParameters.h = hexagonParameters.b / 4.0;
-    hexagonParameters.r = hexagonParameters.b / 2;
-    hexagonParameters.a = 2 * hexagonParameters.r;
-
-	
-    // set a fill and line style
+    hexagonParameters.size = config.HEXAGON_SIZE;
+    hexagonParameters.s = config.HEXAGON_SIZE / 2.0;
+    hexagonParameters.h = config.HEXAGON_SIZE / 4.0;
+    hexagonParameters.r = config.HEXAGON_SIZE / 2;
 
 	for (var i = 0; i < config.WORLD_SIZE.x + 1; i++) 
 	{
-		for (var j = 0; j < config.WORLD_SIZE.y + 1; j++) 
+		for (var j = 1; j < config.WORLD_SIZE.y + 1; j++) 
 		{
 			hexagons.push(new Hexagon(i, j, game, hexagonParameters));
 		}
 	}
 
 	player = game.add.sprite(0, 0, 'player');
-	//image.anchor = new Phaser.Point(x=0.5, y=0.5);
+	player.anchor.x = 0.5;
+    player.anchor.y = 0.5;
 	cursors = game.input.keyboard.createCursorKeys();
 	inputTimer = 0;
 }
 
 function getInput()
 {
-	// if (cursors.up.isDown)
- //    {
- //    	if(game.time.now > inputTimer)
- //    	{
- //        	MovePlayer1North();
- //        	inputTimer = game.time.now + 250;
- //    	}
- //    }
-	// else if (cursors.down.isDown)
- //    {
- //    	if(game.time.now > inputTimer)
- //    	{
- //        	MovePlayer1South()
- //        	inputTimer = game.time.now + 250;
- //        }
- //    }
-
  	if(game.time.now >inputTimer)
  	{
  		inputTimer = game.time.now + config.INPUT_INCREMENT;
@@ -156,7 +136,7 @@ function MovePlayer1SouthWest()
 		MovePlayer1South();
 	}
 
-	if(posX > 1)
+	if(posX >= 1)
 	{
 		posX -= 1;
 	}
@@ -169,7 +149,7 @@ function MovePlayer1NorthWest()
 		MovePlayer1North();
 	}
 
-	if(posX > 1)
+	if(posX >= 1)
 	{
 		posX -= 1;
 	}
@@ -211,7 +191,7 @@ function DoPlayerMovement()
 
 function update()
 {
-	player.x = posX * config.HEXAGON_SIZE;
+	player.x = posX * config.HEXAGON_SIZE + (config.HEXAGON_SIZE / 2);
 
 	if(posX % 2 == 0)
 	{
