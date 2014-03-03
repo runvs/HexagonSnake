@@ -11,6 +11,8 @@ var config =
 
 var game;
 var player;
+var playerTrail = [{x: 0, y: 1}];
+
 var cursors;
 
 var inputTimer = 0;
@@ -30,8 +32,6 @@ DirectionEnum = {
 }
 
 var player1Direction = DirectionEnum.NORTHWEST;
-var posX = 0;
-var posY = 1;
 
 function preload()
 {
@@ -89,69 +89,69 @@ function getInput()
 
 function MovePlayer1North()
 {
-	if(posY > 1)
+	if(playerTrail[0].y > 1)
 	{
-		posY -= 1;
+		playerTrail[0].y -= 1;
 	}
 }
 
 function MovePlayer1NorthEast()
 {
-	if(posX % 2 == 0)
+	if(playerTrail[0].x % 2 == 0)
 	{
 		MovePlayer1North();
 	}
 	
-    if(posX < config.WORLD_SIZE.x)
+    if(playerTrail[0].x < config.WORLD_SIZE.x)
 	{
-		posX += 1;
+		playerTrail[0].x += 1;
 	}
 }
 
 function MovePlayer1SouthEast()
 {
-	if(posX % 2 == 1)
+	if(playerTrail[0].x % 2 == 1)
 	{
 		MovePlayer1South();
 	}
 	
-    if(posX < config.WORLD_SIZE.x)
+    if(playerTrail[0].x < config.WORLD_SIZE.x)
 	{
-		posX += 1;
+		playerTrail[0].x += 1;
 	}
 }
 
 function MovePlayer1South()
 {
-	if(posY < config.WORLD_SIZE.y)
+	if(playerTrail[0].y < config.WORLD_SIZE.y)
 	{
-		posY += 1;
+		playerTrail[0].y += 1;
 	}
 }
 
 function MovePlayer1SouthWest()
 {
-	if(posX % 2 == 1)
+	if(playerTrail[0].x % 2 == 1)
 	{
 		MovePlayer1South();
 	}
 
-	if(posX >= 1)
+	if(playerTrail[0].x >= 1)
 	{
-		posX -= 1;
+		playerTrail[0].x -= 1;
 	}
 }
 
 function MovePlayer1NorthWest()
 {
-	if(posX % 2 == 0)
+	if(playerTrail[0].x % 2 == 0)
 	{
 		MovePlayer1North();
 	}
 
-	if(posX >= 1)
+	if(playerTrail[0].x >= 1)
 	{
-		posX -= 1;
+		playerTrail[0].x -= 1;
 	}
 }
 
@@ -191,15 +191,15 @@ function DoPlayerMovement()
 
 function update()
 {
-	player.x = posX * config.HEXAGON_SIZE + (config.HEXAGON_SIZE / 2);
+	player.x = playerTrail[0].x * config.HEXAGON_SIZE + (config.HEXAGON_SIZE / 2);
 
-	if(posX % 2 == 0)
+	if(playerTrail[0].x % 2 == 0)
 	{
-		player.y = posY  * config.HEXAGON_SIZE + posY * hexagonParameters.h;
+		player.y = playerTrail[0].y  * config.HEXAGON_SIZE + playerTrail[0].y * hexagonParameters.h;
 	}
 	else 
 	{
-		player.y = (posY + 0.5) * config.HEXAGON_SIZE + posY * hexagonParameters.h;
+		player.y = (playerTrail[0].y + 0.5) * config.HEXAGON_SIZE + playerTrail[0].y * hexagonParameters.h;
 	}
 
 	getInput();
