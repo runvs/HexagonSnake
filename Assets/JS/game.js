@@ -15,10 +15,33 @@ var cursors;
 var posX = 0;
 var posY = 0;
 
-var inputTimer;
+
+var inputTimer = 0;
+var movementTimer = 0;
+
 
 var hexagonParameters = {};
 var hexagons = [];
+
+DirectionEnum = {
+    NORTH : 0,
+    NORTHEAST : 1,
+    SOUTEAST : 2,
+    SOUTH : 3,
+    SOUTHWEST :4,
+    NORTHWEST : 5
+}
+
+var player1Direction = DirectionEnum.NORTHWEST;
+var posX = 1;
+var posY = 1;
+
+
+window.onload = function ()
+{
+    game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
+}
+
 
 function preload()
 {
@@ -53,61 +76,155 @@ function create()
 	inputTimer = 0;
 }
 
-function DoInputTimer()
-{
-	inputTimer += 0.25;
-}
-
 function getInput()
 {
 	if (cursors.up.isDown)
     {
-    	DoInputTimer();
-    	if(posY >= 1)
+    	if(game.time.now > inputTimer)
     	{
-        	posY -= 1;
+        	MovePlayer1North();
+        	inputTimer = game.time.now + 250;
     	}
     }
 	else if (cursors.down.isDown)
     {
-    	DoInputTimer();
-    	if(posY < config.WORLD_SIZE.y)
+    	if(game.time.now > inputTimer)
     	{
-        	posY += 1;
+        	MovePlayer1South()
+        	inputTimer = game.time.now + 250;
         }
     }
 
     if (cursors.left.isDown)
     {
-    	DoInputTimer();
-    	if(posX >= 1)
+    	if(posX > 1 && game.time.now > inputTimer)
     	{
         	posX -= 1;	
+        	inputTimer = game.time.now + 250;
     	}
     }
 	else if (cursors.right.isDown)
     {
-    	DoInputTimer();
-    	if(posX < config.WORLD_SIZE.x)
+    	if(posX<WorldSizeX && game.time.now > inputTimer)
     	{
         	posX += 1;
+        	inputTimer = game.time.now + 250;
         }
     }
 }
 
 
+function MovePlayer1North()
+{
+	if(posY > 1)
+	{
+		posY -= 1;
+	}
+}
+
+
+function MovePlayer1NorthEast()
+{
+	if(posX%2==0)
+	{
+		MovePlayer1North();
+	}
+	if(posX < WorldSizeX)
+	{
+		posX += 1;
+	}
+
+}
+
+function MovePlayer1SouthEast()
+{
+	if(posX%2==1)
+	{
+		MovePlayer1South();
+	}
+	if(posX < WorldSizeX)
+	{
+		posX += 1;
+	}
+	
+}
+
+function MovePlayer1South()
+{
+	if(posY < WorldSizeY)
+	{
+		posY += 1;
+	}
+}
+
+function MovePlayer1SouthWest()
+{
+	if(posX%2==1)
+	{
+		MovePlayer1South();
+	}
+	if(posX > 1)
+	{
+		posX -= 1;
+	}
+}
+
+function MovePlayer1NorthWest()
+{
+	if(posX%2==0)
+	{
+		MovePlayer1North();
+	}
+	if(posX > 1)
+	{
+		posX -= 1;
+	}
+}
+
+function DoPlayerMovement()
+{
+	if(game.time.now > movementTimer)
+	{
+
+		movementTimer  = game.time.now + 500;
+		if(player1Direction == DirectionEnum.NORTH)
+		{
+			MovePlayer1North();
+		}
+		else if(player1Direction == DirectionEnum.NORTHEAST)
+		{
+			MovePlayer1NorthEast();
+		}
+		else if(player1Direction == DirectionEnum.SOUTEAST)
+		{
+			MovePlayer1SouthEast();
+		}
+		else if(player1Direction == DirectionEnum.SOUTH)
+		{
+			MovePlayer1South();
+		}
+		else if(player1Direction == DirectionEnum.SOUTHWEST)
+		{
+			MovePlayer1SouthWest();
+		}
+		else if(player1Direction == DirectionEnum.NORTHWEST)
+		{
+			MovePlayer1NorthWest();
+		}
+	}
+    // NORTH : 0,
+    // NORHEAST : 1,
+    // SOUTEAST : 2,
+    // SOUTH : 3,
+    // SOUTHWEST :4,
+    // NORTHWEST : 5
+}
+	player.x = posX * config.HEXAGON_SIZE;
 
 
 function update()
 {
-	console.log(inputTimer);
-	if(inputTimer >= 0)
-	{
-		inputTimer -= game.time.elapsed;
-	}
-	player.x = posX * config.HEXAGON_SIZE;
-	
-
+	image.x = posX * hexagonSize;
 	if(posX%2==0)
 	{
 		player.y = posY  * config.HEXAGON_SIZE + posY * hexagonParameters.h;
@@ -117,18 +234,13 @@ function update()
 		player.y = (posY + 0.5) * config.HEXAGON_SIZE + posY * hexagonParameters.h;
 	}
 
-
-
 	getInput();
+
+	DoPlayerMovement();
+
 
 }
 
 function render()
 {
 
-}
-
-window.onload = function()
-{
-    game = new Phaser.Game(800, 600, '', Phaser.AUTO, { preload: preload, create: create, update: update, render: render });
-}
