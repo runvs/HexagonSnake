@@ -89,39 +89,44 @@ function create()
 
 function getInput()
 {
-	if (cursors.up.isDown)
-    {
-    	if(game.time.now > inputTimer)
-    	{
-        	MovePlayer1North();
-        	inputTimer = game.time.now + 250;
-    	}
-    }
-	else if (cursors.down.isDown)
-    {
-    	if(game.time.now > inputTimer)
-    	{
-        	MovePlayer1South()
-        	inputTimer = game.time.now + 250;
-        }
-    }
+	// if (cursors.up.isDown)
+ //    {
+ //    	if(game.time.now > inputTimer)
+ //    	{
+ //        	MovePlayer1North();
+ //        	inputTimer = game.time.now + 250;
+ //    	}
+ //    }
+	// else if (cursors.down.isDown)
+ //    {
+ //    	if(game.time.now > inputTimer)
+ //    	{
+ //        	MovePlayer1South()
+ //        	inputTimer = game.time.now + 250;
+ //        }
+ //    }
 
-    if (cursors.left.isDown)
-    {
-    	if(posX > 1 && game.time.now > inputTimer)
-    	{
-        	posX -= 1;	
-        	inputTimer = game.time.now + 250;
-    	}
-    }
-	else if (cursors.right.isDown)
-    {
-    	if(posX<WorldSizeX && game.time.now > inputTimer)
-    	{
-        	posX += 1;
-        	inputTimer = game.time.now + 250;
-        }
-    }
+ 	if(game.time.now >inputTimer)
+ 	{
+ 		inputTimer = game.time.now + 250;
+	    if (cursors.right.isDown)
+	    {
+	    	player1Direction++;
+	    	if(player1Direction > DirectionEnum.NORTHWEST)
+	    	{
+	    		player1Direction = DirectionEnum.NORTH;
+	    	}
+	    }
+		else if (cursors.left.isDown)
+	    {
+	    	player1Direction--;
+	    	if(player1Direction < DirectionEnum.NORTH)
+	    	{
+	    		player1Direction = DirectionEnum.NORTHWEST;
+	    	}
+	    }
+	    console.log(player1Direction);
+	}
 }
 
 
@@ -132,7 +137,6 @@ function MovePlayer1North()
 		posY -= 1;
 	}
 }
-
 
 function MovePlayer1NorthEast()
 {
@@ -223,12 +227,6 @@ function DoPlayerMovement()
 			MovePlayer1NorthWest();
 		}
 	}
-    // NORTH : 0,
-    // NORHEAST : 1,
-    // SOUTEAST : 2,
-    // SOUTH : 3,
-    // SOUTHWEST :4,
-    // NORTHWEST : 5
 }
 
 
