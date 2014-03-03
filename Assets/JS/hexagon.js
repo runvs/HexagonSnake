@@ -10,7 +10,7 @@ function Hexagon(x, y, game, p)
     
     if(this.x % 2 == 1)
     {
-        offY += 0.5 * p.size;
+        offY += 0.61 * p.size;
         offX += 0;
     }
     
