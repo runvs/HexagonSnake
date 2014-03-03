@@ -36,6 +36,7 @@ var player1Direction = DirectionEnum.NORTHWEST;
 function preload()
 {
 	game.load.image('player', 'Assets/GFX/player.png');
+    game.load.image('tile', 'Assets/GFX/tile.png');
 }
 
 function create()
@@ -50,7 +51,7 @@ function create()
 	{
 		for (var j = 1; j < config.WORLD_SIZE.y + 1; j++) 
 		{
-			hexagons.push(new Hexagon(i, j, game, hexagonParameters));
+			hexagons.push(new Hexagon(i, j, game, hexagonParameters, 'tile'));
 		}
 	}
 
