@@ -6,7 +6,8 @@ var config =
         x: 15,
         y: 9
     },
-    INPUT_INCREMENT: 250
+    INPUT_INCREMENT: 50,
+    MOVEMENT_INCREMENT: 500
 };
 
 var game;
@@ -59,7 +60,34 @@ function create()
 	player.anchor.x = 0.5;
     player.anchor.y = 0.5;
 	cursors = game.input.keyboard.createCursorKeys();
+    cursors.right.onDown.add(Player1TurnRight, this);
+    cursors.left.onDown.add(Player1TurnLeft, this);
 	inputTimer = 0;
+}
+
+function Player1TurnRight()
+{
+    player1Direction++;
+     if(player1Direction > DirectionEnum.NORTHWEST)
+     {
+         player1Direction = DirectionEnum.NORTH;
+     }
+}
+function Player1TurnLeft()
+{
+    player1Direction++;
+     if(player1Direction > DirectionEnum.NORTHWEST)
+     {
+         player1Direction = DirectionEnum.NORTH;
+     }
+}
+function Player1TurnLeft()
+{
+    player1Direction--;
+    if(player1Direction < DirectionEnum.NORTH)
+    {
+        player1Direction = DirectionEnum.NORTHWEST;
+    }
 }
 
 function getInput()
@@ -69,19 +97,12 @@ function getInput()
  		inputTimer = game.time.now + config.INPUT_INCREMENT;
 	    if (cursors.right.isDown)
 	    {
-	    	player1Direction++;
-	    	if(player1Direction > DirectionEnum.NORTHWEST)
-	    	{
-	    		player1Direction = DirectionEnum.NORTH;
-	    	}
+	    	//Player1TurnRight();
 	    }
 		else if (cursors.left.isDown)
 	    {
-	    	player1Direction--;
-	    	if(player1Direction < DirectionEnum.NORTH)
-	    	{
-	    		player1Direction = DirectionEnum.NORTHWEST;
-	    	}
+            //Player1TurnLeft();
+	    	
 	    }
 	    console.log(player1Direction);
 	}
@@ -160,7 +181,7 @@ function DoPlayerMovement()
 {
 	if(game.time.now > movementTimer)
 	{
-		movementTimer  = game.time.now + 500;
+		movementTimer  = game.time.now + config.MOVEMENT_INCREMENT;
 		if(player1Direction == DirectionEnum.NORTH)
 		{
 			MovePlayer1North();
