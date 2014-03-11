@@ -15,12 +15,12 @@ function Hexagon(x, y, game, p, spriteName)
     
     this.graphics = game.add.sprite(offX, offY, spriteName);
 
-    var tween = game.add.tween(this.graphics).to({ alpha: 0.6 }, 500, null, true, x * 50 * (Math.random() * 0.8 + 1), true, true);
+    var tween = game.add.tween(this.graphics).to({ alpha: 0.5 }, 500, null, true, x * 50 * (Math.random() * 0.8 + 1), true, true);
 
     tween.onComplete.add(onComplete, this);
 
     function onComplete() {
-        tween = game.add.tween(this.graphics).to({ alpha: 0.6 }, 500, null, true, x * 50 * (Math.random() * 0.8 + 1), true, true);
+        tween = game.add.tween(this.graphics).to({ alpha: 0.8 }, 500, null, true, y * 50 * (Math.random() * 0.8 + 1), true, true);
         tween.onComplete.add(onComplete, this);
     };
 }
