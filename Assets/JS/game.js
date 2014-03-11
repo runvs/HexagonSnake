@@ -38,6 +38,8 @@ function preload()
 {
 	game.load.image('player', 'Assets/GFX/player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
+
+    game.load.audio('music', 'Assets/Audio/music.ogg');
 }
 
 function create()
@@ -62,6 +64,11 @@ function create()
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
     cursors.left.onDown.add(Player1TurnLeft, this);
+
+    
+    music = game.add.audio('music');
+    music.play('', 0, 1, true);
+
 	inputTimer = 0;
 }
 
@@ -214,11 +221,11 @@ function DoPlayerMovement()
 function update()
 {
     // whatever this +1 comes from...?
-	player.x = playerTrail[0].x * (config.HEXAGON_SIZE +1) + (hexagonParameters.h);
+	player.x = playerTrail[0].x * (config.HEXAGON_SIZE ) + (hexagonParameters.h);
 
 	if(playerTrail[0].x % 2 == 0)
 	{
-		player.y = playerTrail[0].y  * (config.HEXAGON_SIZE+1) + playerTrail[0].y * hexagonParameters.h;
+		player.y = playerTrail[0].y  * (config.HEXAGON_SIZE) + playerTrail[0].y * hexagonParameters.h;
 	}
 	else 
 	{
