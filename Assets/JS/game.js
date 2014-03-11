@@ -12,6 +12,7 @@ var config =
 
 var game;
 var player;
+var item;
 var playerTrail = [{x: 0, y: 1}];
 
 var cursors;
@@ -19,9 +20,14 @@ var cursors;
 var inputTimer = 0;
 var movementTimer = 0;
 
-
 var hexagonParameters = {};
 var hexagons = [];
+
+var itemPosition = {x:0, y:1};
+
+var playerItemCounter = 0;
+var playerItemText;
+
 
 DirectionEnum = {
     NORTH     : 0,
@@ -38,6 +44,7 @@ function preload()
 {
 	game.load.image('player', 'Assets/GFX/player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
+    game.load.image('item', 'Assets/GFX/item.png');
 
     game.load.audio('music', 'Assets/Audio/music.ogg');
 }
@@ -61,15 +68,28 @@ function create()
 	player = game.add.sprite(0, 0, 'player');
 	player.anchor.x = 0.5;
     player.anchor.y = 0.5;
+
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
     cursors.left.onDown.add(Player1TurnLeft, this);
 
+    item = game.add.sprite(0,0,'item');
+    item.anchor.x = 0.5;
+    item.anchor.y = 0.5;
+    repositionItem();
     
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
 	inputTimer = 0;
+
+    text = game.add.text(10, 15, "0 Points", {
+        font: "20px Arial",
+        fill: "#ffffff",
+        align: "left"
+    });
+
+
 }
 
 function Player1TurnRight()
@@ -218,9 +238,25 @@ function DoPlayerMovement()
 }
 
 
+function repositionItem()
+{
+    itemPosition.x = game.rnd.integerInRange(0, config.WORLD_SIZE.x);
+    itemPosition.y = game.rnd.integerInRange(0, config.WORLD_SIZE.y);
+
+    item.x = itemPosition.x * (config.HEXAGON_SIZE ) + (hexagonParameters.h);
+    if(itemPosition.x %2 == 0)
+    {
+        item.y = itemPosition.y  * (config.HEXAGON_SIZE) + itemPosition.y * hexagonParameters.h;
+    }
+    else
+    {
+        item.y = (itemPosition.y + 0.61) * (config.HEXAGON_SIZE+1) + itemPosition.y * hexagonParameters.h;
+    }
+}
+
+
 function update()
 {
-    // whatever this +1 comes from...?
 	player.x = playerTrail[0].x * (config.HEXAGON_SIZE ) + (hexagonParameters.h);
 
 	if(playerTrail[0].x % 2 == 0)
@@ -231,6 +267,16 @@ function update()
 	{
 		player.y = (playerTrail[0].y + 0.61) * (config.HEXAGON_SIZE+1) + playerTrail[0].y * hexagonParameters.h;
 	}
+
+
+    if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
+    {
+        playerItemCounter++;
+        repositionItem();
+        text.setText( 250*playerItemCounter + " Points" );
+
+
+    }
 
 	getInput();
 	DoPlayerMovement();
