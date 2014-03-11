@@ -28,6 +28,8 @@ var itemPosition = {x:0, y:1};
 var playerItemCounter = 0;
 var playerItemText;
 
+var music;
+
 
 DirectionEnum = {
     NORTH     : 0,
@@ -46,7 +48,7 @@ function preload()
     game.load.image('tile', 'Assets/GFX/tile.png');
     game.load.image('item', 'Assets/GFX/item.png');
 
-    game.load.audio('music', 'Assets/Audio/music.ogg');
+    game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
 }
 
 function create()
@@ -72,6 +74,9 @@ function create()
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
     cursors.left.onDown.add(Player1TurnLeft, this);
+
+    cursors.m = game.input.keyboard.addKey(Phaser.Keyboard.M);
+    cursors.m.onDown.add(MusicMutechange,this);
 
     item = game.add.sprite(0,0,'item');
     item.anchor.x = 0.5;
@@ -254,6 +259,10 @@ function repositionItem()
     }
 }
 
+function MusicMutechange()
+{
+    game.sound.mute = !game.sound.mute;
+}
 
 function update()
 {
@@ -274,8 +283,6 @@ function update()
         playerItemCounter++;
         repositionItem();
         text.setText( 250*playerItemCounter + " Points" );
-
-
     }
 
 	getInput();
