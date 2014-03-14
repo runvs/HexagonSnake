@@ -4,16 +4,104 @@
 		"selected_items":
 		[
 			[
+				"item",
+				"itemPosition"
+			],
+			[
+				"P",
+				"Player1TurnRight"
+			],
+			[
+				"Player",
+				"Player1TurnRight"
+			],
+			[
+				"inpu",
+				"inputTimer"
+			],
+			[
+				"input",
+				"inputTimer"
+			],
+			[
+				"player1",
+				"player1Direction"
+			],
+			[
+				"Di",
+				"DirectionEnum"
+			],
+			[
+				"NORTHWe",
+				"NORTHWEST"
+			],
+			[
+				"NO",
+				"NORTH"
+			],
+			[
+				"play",
+				"player1Direction"
+			],
+			[
+				"player",
+				"player1Direction"
+			],
+			[
+				"SO",
+				"SOUTEAST"
+			],
+			[
+				"MovePla",
+				"MovePlayer1South"
+			],
+			[
+				"No",
+				"NORHEAST"
+			],
+			[
+				"MovePlayer1Nor",
+				"MovePlayer1NorthEast"
+			],
+			[
+				"NOTH",
+				"NORHEAST"
+			],
+			[
+				"Worl",
+				"WorldSizeX"
+			],
+			[
+				"MoveP",
+				"MovePlayer1South"
+			],
+			[
+				"Move",
+				"MovePlayer1Sout"
+			],
+			[
+				"Dir",
+				"DirectionEnum"
+			],
+			[
+				"pla",
+				"player1Direction"
+			],
+			[
+				"move",
+				"movementTimer"
+			],
+			[
+				"NOR",
+				"NORTH"
+			],
+			[
 				"wor",
 				"WorldSizeX"
 			],
 			[
 				"Wo",
 				"WorldSizeX"
-			],
-			[
-				"input",
-				"inputTimer"
 			]
 		]
 	},
@@ -23,7 +111,15 @@
 			"file": "Assets/JS/game.js",
 			"settings":
 			{
-				"buffer_size": 2155,
+				"buffer_size": 5691,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Assets/JS/hexagon.js",
+			"settings":
+			{
+				"buffer_size": 709,
 				"line_ending": "Windows"
 			}
 		}
@@ -55,11 +151,13 @@
 	},
 	"file_history":
 	[
+		"/E/Projekte/fix/phaser/game.js",
+		"/C/Users/Laguna/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/C/Users/Laguna/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap"
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -73,6 +171,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"music",
+			"500",
+			"0",
+			"{\n",
+			"getinput",
 			"image"
 		],
 		"highlight": true,
@@ -100,15 +203,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2155,
+						"buffer_size": 5691,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								339,
-								339
+								5129,
+								5129
 							]
 						],
 						"settings":
@@ -116,10 +219,40 @@
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 4469.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Assets/JS/hexagon.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 709,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								521,
+								521
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -127,7 +260,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 27.0
 	},
 	"input":
 	{
@@ -163,7 +296,7 @@
 	"project": "HexagonSnake.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 50.0
 	},
 	"save_all_on_build": true,
 	"select_file":
