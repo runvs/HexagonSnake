@@ -3,8 +3,8 @@ var config =
     HEXAGON_SIZE: 50,
     WORLD_SIZE:
     {
-        x: 15,
-        y: 9
+        x: 14,
+        y: 8
     },
     INPUT_INCREMENT: 50,
     MOVEMENT_INCREMENT: 500
@@ -245,8 +245,8 @@ function DoPlayerMovement()
 
 function repositionItem()
 {
-    itemPosition.x = game.rnd.integerInRange(0, config.WORLD_SIZE.x);
-    itemPosition.y = game.rnd.integerInRange(0, config.WORLD_SIZE.y);
+    itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
+    itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
 
     item.x = itemPosition.x * (config.HEXAGON_SIZE ) + (hexagonParameters.h);
     if(itemPosition.x %2 == 0)
