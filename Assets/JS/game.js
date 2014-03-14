@@ -248,15 +248,11 @@ function repositionItem()
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
 
-    item.x = itemPosition.x * (config.HEXAGON_SIZE ) + (hexagonParameters.h);
-    if(itemPosition.x %2 == 0)
-    {
-        item.y = itemPosition.y  * (config.HEXAGON_SIZE) + itemPosition.y * hexagonParameters.h;
-    }
-    else
-    {
-        item.y = (itemPosition.y + 0.61) * (config.HEXAGON_SIZE+1) + itemPosition.y * hexagonParameters.h;
-    }
+    var itemScreenPos =getObjectPosition(itemPosition.x, itemPosition.y);
+
+
+    item.x = itemScreenPos.x;
+    item.y = itemScreenPos.y;
 }
 
 function MusicMutechange()
@@ -264,25 +260,34 @@ function MusicMutechange()
     game.sound.mute = !game.sound.mute;
 }
 
+function getObjectPosition (tileX, tileY)
+{
+    var pos = [{x: 0, y: 1}];
+    pos.x = tileX * (config.HEXAGON_SIZE ) + (hexagonParameters.h);
+
+    if(tileX % 2 == 0)
+    {
+        pos.y = tileY  * (config.HEXAGON_SIZE) + tileY * hexagonParameters.h;
+    }
+    else 
+    {
+        pos.y = (tileY + 0.61) * (config.HEXAGON_SIZE+1) + tileY * hexagonParameters.h;
+    }
+
+    return pos;
+}
+
 function update()
 {
-	player.x = playerTrail[0].x * (config.HEXAGON_SIZE ) + (hexagonParameters.h);
-
-	if(playerTrail[0].x % 2 == 0)
-	{
-		player.y = playerTrail[0].y  * (config.HEXAGON_SIZE) + playerTrail[0].y * hexagonParameters.h;
-	}
-	else 
-	{
-		player.y = (playerTrail[0].y + 0.61) * (config.HEXAGON_SIZE+1) + playerTrail[0].y * hexagonParameters.h;
-	}
-
+    var playerScreenPosition = getObjectPosition(playerTrail[0].x, playerTrail[0].y);
+    player.x = playerScreenPosition.x;
+    player.y = playerScreenPosition.y;
 
     if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
     {
         playerItemCounter++;
         repositionItem();
-        text.setText( 250*playerItemCounter + " Points" );
+        text.setText( 225*playerItemCounter + " Points" );
     }
 
 	getInput();
