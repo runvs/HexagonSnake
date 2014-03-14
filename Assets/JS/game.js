@@ -30,6 +30,10 @@ var playerItemText;
 
 var music;
 
+var tileBlocked;
+
+var IsGameOver;
+
 
 DirectionEnum = {
     NORTH     : 0,
@@ -46,6 +50,7 @@ function preload()
 {
 	game.load.image('player', 'Assets/GFX/player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
+    game.load.image('tileBlocked', 'Assets/GFX/tileBlocked.png');
     game.load.image('item', 'Assets/GFX/item.png');
 
     game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
@@ -53,6 +58,8 @@ function preload()
 
 function create()
 {
+    IsGameOver = false;
+
     // Set hexagon parameters
     hexagonParameters.size = config.HEXAGON_SIZE;
     hexagonParameters.s = config.HEXAGON_SIZE / 2.0;
@@ -74,6 +81,9 @@ function create()
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
     cursors.left.onDown.add(Player1TurnLeft, this);
+    playerTrail[0].x = config.WORLD_SIZE.x/2;
+    playerTrail[0].y = config.WORLD_SIZE.y/2;
+    player1Direction = DirectionEnum.SOUTH;
 
     cursors.m = game.input.keyboard.addKey(Phaser.Keyboard.M);
     cursors.m.onDown.add(MusicMutechange,this);
@@ -82,13 +92,15 @@ function create()
     item.anchor.x = 0.5;
     item.anchor.y = 0.5;
     repositionItem();
+
+    tileBlocked = game.add.sprite(0,0, "tileBlocked");
     
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
 	inputTimer = 0;
 
-    text = game.add.text(10, 15, "0 Points", {
+    playerItemText = game.add.text(10, 15, "0 Points", {
         font: "20px Arial",
         fill: "#ffffff",
         align: "left"
@@ -99,45 +111,26 @@ function create()
 
 function Player1TurnRight()
 {
-    player1Direction++;
-     if(player1Direction > DirectionEnum.NORTHWEST)
-     {
-         player1Direction = DirectionEnum.NORTH;
-     }
-}
-function Player1TurnLeft()
-{
-    player1Direction++;
-     if(player1Direction > DirectionEnum.NORTHWEST)
-     {
-         player1Direction = DirectionEnum.NORTH;
-     }
-}
-function Player1TurnLeft()
-{
-    player1Direction--;
-    if(player1Direction < DirectionEnum.NORTH)
+    if(!IsGameOver)
     {
-        player1Direction = DirectionEnum.NORTHWEST;
+        player1Direction++;
+         if(player1Direction > DirectionEnum.NORTHWEST )
+         {
+             player1Direction = DirectionEnum.NORTH;
+         }
     }
 }
 
-function getInput()
+function Player1TurnLeft()
 {
- 	if(game.time.now >inputTimer)
- 	{
- 		inputTimer = game.time.now + config.INPUT_INCREMENT;
-	    if (cursors.right.isDown)
-	    {
-	    	//Player1TurnRight();
-	    }
-		else if (cursors.left.isDown)
-	    {
-            //Player1TurnLeft();
-	    	
-	    }
-	    console.log(player1Direction);
-	}
+    if(!IsGameOver)
+    {
+        player1Direction--;
+        if(player1Direction < DirectionEnum.NORTH)
+        {
+            player1Direction = DirectionEnum.NORTHWEST;
+        }
+    }
 }
 
 
@@ -147,6 +140,10 @@ function MovePlayer1North()
 	{
 		playerTrail[0].y -= 1;
 	}
+    else 
+    {
+        IsGameOver = true;
+    }
 }
 
 function MovePlayer1NorthEast()
@@ -160,6 +157,10 @@ function MovePlayer1NorthEast()
 	{
 		playerTrail[0].x += 1;
 	}
+    else 
+    {
+        IsGameOver = true;
+    }
 }
 
 function MovePlayer1SouthEast()
@@ -173,7 +174,12 @@ function MovePlayer1SouthEast()
 	{
 		playerTrail[0].x += 1;
 	}
+    else 
+    {
+        IsGameOver = true;
+    }
 }
+
 
 function MovePlayer1South()
 {
@@ -181,6 +187,10 @@ function MovePlayer1South()
 	{
 		playerTrail[0].y += 1;
 	}
+    else 
+    {
+        IsGameOver = true;
+    }
 }
 
 function MovePlayer1SouthWest()
@@ -194,6 +204,10 @@ function MovePlayer1SouthWest()
 	{
 		playerTrail[0].x -= 1;
 	}
+        else 
+    {
+        IsGameOver = true;
+    }
 }
 
 function MovePlayer1NorthWest()
@@ -207,11 +221,15 @@ function MovePlayer1NorthWest()
 	{
 		playerTrail[0].x -= 1;
 	}
+    else 
+    {
+        IsGameOver = true;
+    }
 }
 
 function DoPlayerMovement()
 {
-	if(game.time.now > movementTimer)
+	if(game.time.now > movementTimer && !IsGameOver)
 	{
 		movementTimer  = game.time.now + config.MOVEMENT_INCREMENT;
 		if(player1Direction == DirectionEnum.NORTH)
@@ -248,7 +266,7 @@ function repositionItem()
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
 
-    var itemScreenPos =getObjectPosition(itemPosition.x, itemPosition.y);
+    var itemScreenPos =getScreenPosition(itemPosition.x, itemPosition.y);
 
 
     item.x = itemScreenPos.x;
@@ -260,7 +278,7 @@ function MusicMutechange()
     game.sound.mute = !game.sound.mute;
 }
 
-function getObjectPosition (tileX, tileY)
+function getScreenPosition (tileX, tileY)
 {
     var pos = [{x: 0, y: 1}];
     pos.x = tileX * (config.HEXAGON_SIZE ) + (hexagonParameters.h);
@@ -279,7 +297,7 @@ function getObjectPosition (tileX, tileY)
 
 function update()
 {
-    var playerScreenPosition = getObjectPosition(playerTrail[0].x, playerTrail[0].y);
+    var playerScreenPosition = getScreenPosition(playerTrail[0].x, playerTrail[0].y);
     player.x = playerScreenPosition.x;
     player.y = playerScreenPosition.y;
 
@@ -287,10 +305,11 @@ function update()
     {
         playerItemCounter++;
         repositionItem();
-        text.setText( 225*playerItemCounter + " Points" );
+        playerItemText.setText( 225*playerItemCounter + " Points" );
     }
 
-	getInput();
+
+
 	DoPlayerMovement();
 }
 
