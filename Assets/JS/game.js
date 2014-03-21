@@ -13,7 +13,7 @@ var config =
 var game;
 var player;
 var item;
-var playerTrail = [{x: 0, y: 1}];
+var playerTrail = [{x: 0, y: 1}, {x: 0, y: 1}];
 
 var cursors;
 
@@ -74,15 +74,19 @@ function create()
 		}
 	}
 
-	player = game.add.sprite(0, 0, 'player');
-	player.anchor.x = 0.5;
-    player.anchor.y = 0.5;
+    player = game.add.group();
+    var first = game.add.sprite(0, 0, 'player');
+	first.anchor.x = 0.5;
+    first.anchor.y = 0.5;
+    player.add(first);
 
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
     cursors.left.onDown.add(Player1TurnLeft, this);
     playerTrail[0].x = config.WORLD_SIZE.x/2;
     playerTrail[0].y = config.WORLD_SIZE.y/2;
+    playerTrail[1].x = config.WORLD_SIZE.x/2;
+    playerTrail[1].y = config.WORLD_SIZE.y/2 - 1;
     player1Direction = DirectionEnum.SOUTH;
 
     cursors.m = game.input.keyboard.addKey(Phaser.Keyboard.M);
@@ -114,10 +118,10 @@ function Player1TurnRight()
     if(!IsGameOver)
     {
         player1Direction++;
-         if(player1Direction > DirectionEnum.NORTHWEST )
-         {
-             player1Direction = DirectionEnum.NORTH;
-         }
+        if(player1Direction > DirectionEnum.NORTHWEST )
+        {
+            player1Direction = DirectionEnum.NORTH;
+        }
     }
 }
 
@@ -138,7 +142,7 @@ function MovePlayer1North()
 {
 	if(playerTrail[0].y > 1)
 	{
-		playerTrail[0].y -= 1;
+        playerTrail[0].y -= 1;
 	}
     else 
     {
@@ -204,7 +208,7 @@ function MovePlayer1SouthWest()
 	{
 		playerTrail[0].x -= 1;
 	}
-        else 
+    else 
     {
         IsGameOver = true;
     }
@@ -231,7 +235,14 @@ function DoPlayerMovement()
 {
 	if(game.time.now > movementTimer && !IsGameOver)
 	{
-		movementTimer  = game.time.now + config.MOVEMENT_INCREMENT;
+		movementTimer = game.time.now + config.MOVEMENT_INCREMENT;
+
+        for(var i = playerTrail.length - 1; i >= 1; i--)
+        {
+            playerTrail[i].x = playerTrail[i - 1].x;
+            playerTrail[i].y = playerTrail[i - 1].y;
+        }
+
 		if(player1Direction == DirectionEnum.NORTH)
 		{
 			MovePlayer1North();
@@ -256,8 +267,22 @@ function DoPlayerMovement()
 		{
 			MovePlayer1NorthWest();
 		}
-	}
 
+        repositionPlayerSprites();
+	}
+}
+
+function repositionPlayerSprites()
+{
+    player.removeAll();
+    for(var i = 0; i < playerTrail.length; i++)
+    {
+        var newCoords = getScreenPosition(playerTrail[i].x, playerTrail[i].y);
+        var p = game.add.sprite(newCoords.x, newCoords.y, 'player');
+        p.anchor.x = 0.5;
+        p.anchor.y = 0.5;
+        player.add(p);
+    }
 }
 
 
@@ -298,17 +323,17 @@ function getScreenPosition (tileX, tileY)
 function update()
 {
     var playerScreenPosition = getScreenPosition(playerTrail[0].x, playerTrail[0].y);
-    player.x = playerScreenPosition.x;
-    player.y = playerScreenPosition.y;
+    player.getAt(0).x = playerScreenPosition.x;
+    player.getAt(0).y = playerScreenPosition.y;
 
+    // Is the snake head on an item?
     if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
     {
+        playerTrail.push({ x: itemPosition.x, y: itemPosition.y });
         playerItemCounter++;
         repositionItem();
-        playerItemText.setText( 225*playerItemCounter + " Points" );
+        playerItemText.setText(225 * playerItemCounter + ' Points');
     }
-
-
 
 	DoPlayerMovement();
 }
