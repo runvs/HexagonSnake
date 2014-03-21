@@ -96,7 +96,7 @@ function create()
     item = game.add.sprite(0,0,'item');
     item.anchor.x = 0.5;
     item.anchor.y = 0.5;
-    repositionItem();
+    GetNewRandomItemPosition();
 
     tileBlocked = game.add.sprite(0,0, "tileBlocked");
     
@@ -107,15 +107,16 @@ function create()
 
     playerItemText = game.add.text(10, 15, "0 Points", {
         font: "20px Arial",
-        fill: "#ffffff",
+        fill: " #6088ff",
         align: "left"
     });
 
-    GameOverText = game.add.text(game.width/2., game.height/2., "", {
-        font: "20px Arial",
-        fill: "#ffffff",
-        align: "center"
+    GameOverText = game.add.text(game.width/2. - 75, game.height/2., "Game Over", {
+        font: "25px Arial",
+        fill: " #ff8860",
+        align: "right"
     });
+    GameOverText.setText("");
 }
 
 
@@ -311,14 +312,15 @@ function repositionPlayer()
 
 function repositionItem()
 {
+    var itemScreenPos =getScreenPosition(itemPosition.x, itemPosition.y);
+    item.x = itemScreenPos.x;
+    item.y = itemScreenPos.y + config.globalScreenOffsetY;
+}
+
+function GetNewRandomItemPosition()
+{
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
-
-    var itemScreenPos =getScreenPosition(itemPosition.x, itemPosition.y);
-
-
-    item.x = itemScreenPos.x;
-    item.y = itemScreenPos.y;
 }
 
 function MusicMutechange()
@@ -338,7 +340,7 @@ function getScreenPosition (tileX, tileY)
     }
     else 
     {
-        pos.y = (tileY + 0.61) * (config.HEXAGON_SIZE+1) + tileY * hexagonParameters.h + config.globalScreenOffsetY;
+        pos.y = (tileY + 0.61) * (config.HEXAGON_SIZE+1) + tileY * hexagonParameters.h;
     }
 
     return pos;
@@ -346,12 +348,10 @@ function getScreenPosition (tileX, tileY)
 
 function update()
 {
-    
-
     if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
     {
         playerItemCounter++;
-        repositionItem();
+        GetNewRandomItemPosition();
         playerItemText.setText( 225*playerItemCounter + " Points" );
     }
 
@@ -363,6 +363,7 @@ function update()
         GameOverText.setText("Game Over");
     }
     DoPlayerMovement();
+    repositionItem();
 }
 
 window.onload = function ()
