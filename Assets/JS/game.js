@@ -440,6 +440,14 @@ function GetNewRandomItemPosition()
 {
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
+
+    playerTrail.forEach(function(val) {
+        if(val.x == itemPosition.x && val.y == itemPosition.y)
+        {
+            GetNewRandomItemPosition();
+            return;
+        }
+    });
 }
 
 function MusicMutechange()
