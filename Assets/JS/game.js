@@ -54,8 +54,8 @@ function preload()
 {
 	game.load.image('player', 'Assets/GFX/player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
-    game.load.image('tileBlocked', 'Assets/GFX/tileBlocked.png');
-    game.load.image('item', 'Assets/GFX/item.png');
+    //game.load.image('tileBlocked', 'Assets/GFX/tileBlocked.png');
+    game.load.image('item', 'Assets/GFX/tileBlocked.png');
 
     game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
 }
@@ -103,8 +103,8 @@ function create()
     cursors.m.onDown.add(MusicMutechange,this);
 
     item = game.add.sprite(0,0,'item');
-    item.anchor.x = 0.5;
-    item.anchor.y = 0.5;
+    item.anchor.x = 0.25;
+    item.anchor.y = 0;
     GetNewRandomItemPosition();
 
 
@@ -135,6 +135,7 @@ function SwitchToGameOver()
 {
     IsGameOver = true;
     game.add.tween(player).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
+    game.add.tween(config).to({globalScreenOffsetY : 1000}, 3200, Phaser.Easing.Cubic.In, true);
     game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
 }
 
@@ -328,6 +329,16 @@ function DoPlayerMovement()
 			MovePlayer1NorthWest();
 		}
 
+        // is the head of the Snake on any of its tail poisitions?
+        for(var i = 1; i < playerTrail.length; i++)
+        {
+            if(playerTrail[0].x == playerTrail[i].x && playerTrail[0].y == playerTrail[i].y)
+            {
+                SwitchToGameOver();
+            }
+        }
+
+
         repositionPlayerSprites();
 	}
 }
@@ -377,7 +388,7 @@ function getScreenPosition (tileX, tileY)
     }
     else 
     {
-        pos.y = (tileY + 0.61) * (config.HEXAGON_SIZE+1) + tileY * hexagonParameters.h;
+        pos.y = (tileY + 0.61) * (config.HEXAGON_SIZE) + tileY * hexagonParameters.h;
     }
 
     return pos;
@@ -393,6 +404,8 @@ function update()
         GetNewRandomItemPosition();
         playerItemText.setText(225 * playerItemCounter + ' Points');
     }
+
+
 	
     //console.log(game.hexagonGroup.y);
     if(IsGameOver)
