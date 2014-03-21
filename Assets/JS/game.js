@@ -127,9 +127,6 @@ function SwitchToGameOver()
 }
 
 
-
-
-
 function Player1TurnRight()
 {
     if(!IsGameOver)
@@ -174,6 +171,11 @@ function MovePlayer1NorthEast()
 {
     if(!IsGameOver)
     {
+        if(!(playerTrail[0].x < config.WORLD_SIZE.x))
+        {
+            SwitchToGameOver();
+        }
+
     	if(playerTrail[0].x % 2 == 0)
     	{
     		MovePlayer1North();
@@ -183,10 +185,6 @@ function MovePlayer1NorthEast()
     	{
     		playerTrail[0].x += 1;
     	}
-        else 
-        {
-            SwitchToGameOver();
-        }
     }
 }
 
@@ -194,6 +192,11 @@ function MovePlayer1SouthEast()
 {
     if(!IsGameOver)
     {
+        if(!(playerTrail[0].x < config.WORLD_SIZE.x))
+        {
+            SwitchToGameOver();
+        }
+
     	if(playerTrail[0].x % 2 == 1)
     	{
     		MovePlayer1South();
@@ -203,10 +206,6 @@ function MovePlayer1SouthEast()
     	{
     		playerTrail[0].x += 1;
     	}
-        else 
-        {
-            SwitchToGameOver();
-        }
     }
 }
 
@@ -230,6 +229,10 @@ function MovePlayer1SouthWest()
 {
     if(!IsGameOver)
     {
+        if(!(playerTrail[0].x >= 1))
+        {
+            SwitchToGameOver();
+        }
     	if(playerTrail[0].x % 2 == 1)
     	{
     		MovePlayer1South();
@@ -239,10 +242,7 @@ function MovePlayer1SouthWest()
     	{
     		playerTrail[0].x -= 1;
     	}
-        else 
-        {
-            SwitchToGameOver();
-        }
+
     }
 }
 
