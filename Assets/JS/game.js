@@ -45,6 +45,7 @@ var hexagonTween;
 
 
 
+
 DirectionEnum = {
     NORTH     : 0,
     NORTHEAST : 1,
@@ -63,6 +64,7 @@ function preload()
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
 
     game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
+    game.load.audio('pickup', ['Assets/Audio/pickup.ogg', 'Assets/Audio/pickup.mp3']);
 }
 
 function create()
@@ -123,10 +125,10 @@ function create()
     });
     playerItemText.setText("");
 
-    GameOverText = game.add.text(game.width/2. - 75, game.height/2., "Game Over", {
+    GameOverText = game.add.text(game.width/2. - 115, game.height/2. - 40, "Game Over", {
         font: "25px Arial",
         fill: " #ff8860",
-        align: "right"
+        align: "center"
     });
     GameOverText.setText("");
     
@@ -481,11 +483,13 @@ function update()
             {
                 config.MOVEMENT_INCREMENT = 100;
             }
+            var pickupSound = game.add.audio('pickup');
+            pickupSound.play("", 0, 0.25);
         }
 
         if(IsGameOver)
         {
-            GameOverText.setText("Game Over");
+            GameOverText.setText("Game Over\nTap/Press Space");
         }
         DoPlayerMovement();
         repositionItem();
