@@ -4,16 +4,15 @@ var config =
     WORLD_SIZE:
     {
         x: 14,
-        y: 8
+        y: 6
     },
     INPUT_INCREMENT: 50,
     MOVEMENT_INCREMENT: 500,
-    globalScreenOffsetY: 0
 };
 
 var game;
-var player;
 var item;
+var player;
 var playerTrail = [{x: 0, y: 1}, {x: 0, y: 1}];
 
 var TouchInput;
@@ -33,13 +32,17 @@ var playerItemText;
 
 var music;
 
-var tileBlocked;
+var IsInMenu;
+var MenuTextGameName;
+var MenuTextInfo;
+var MenuTextCredits;
 
 var IsGameOver;
 var GameOverText;
 
 var playerTween;
 var hexagonTween;
+
 
 
 DirectionEnum = {
@@ -57,7 +60,6 @@ function preload()
 {
 	game.load.image('player', 'Assets/GFX/player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
-    //game.load.image('tileBlocked', 'Assets/GFX/tileBlocked.png');
     game.load.image('item', 'Assets/GFX/tileBlocked.png');
 
     game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
@@ -65,9 +67,10 @@ function preload()
 
 function create()
 {
+    IsInMenu = true;
     IsGameOver = false;
-    globalScreenOffsetY = 0;
 
+    game.stage.backgroundColor = "#030710";
     // Set hexagon parameters
     hexagonParameters.size = config.HEXAGON_SIZE;
     hexagonParameters.s = config.HEXAGON_SIZE / 2.0;
@@ -76,19 +79,10 @@ function create()
 
     game.hexagonGroup = game.add.group();
 
-	for (var i = 0; i < config.WORLD_SIZE.x + 1; i++) 
-	{
-		for (var j = 1; j < config.WORLD_SIZE.y + 1; j++) 
-		{
-			hexagons.push(new Hexagon(i, j, game, hexagonParameters, 'tile'));
-		}
-	}
+	
 
     player = game.add.group();
-    var first = game.add.sprite(0, 0, 'player');
-	first.anchor.x = 0.5;
-    first.anchor.y = 0.5;
-    player.add(first);
+    
 
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
@@ -96,37 +90,38 @@ function create()
     
     game.input.onDown.add(DoTouchInput, this);
 
-    playerTrail[0].x = config.WORLD_SIZE.x/2;
-    playerTrail[0].y = config.WORLD_SIZE.y/2;
-    playerTrail[1].x = config.WORLD_SIZE.x/2;
-    playerTrail[1].y = config.WORLD_SIZE.y/2 - 1;
-    player1Direction = DirectionEnum.SOUTH;
-
     cursors.m = game.input.keyboard.addKey(Phaser.Keyboard.M);
     cursors.m.onDown.add(MusicMutechange, this);
 
     cursors.r = game.input.keyboard.addKey(Phaser.Keyboard.R);
     cursors.r.onDown.add(resetGame, this);
 
-    item = game.add.sprite(0,0,'item');
-    item.anchor.x = 0.25;
-    item.anchor.y = 0;
-    GetNewRandomItemPosition();
+    cursors.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    cursors.space.onDown.add(SwitchIntoGame, this);
 
 
+    inputTimer = 0;
 
-    tileBlocked = game.add.sprite(0,0, "tileBlocked");
-    
+
+    playerTrail[0].x = config.WORLD_SIZE.x/2;
+    playerTrail[0].y = config.WORLD_SIZE.y/2;
+    playerTrail[1].x = config.WORLD_SIZE.x/2;
+    playerTrail[1].y = config.WORLD_SIZE.y/2 - 1;
+    player1Direction = DirectionEnum.SOUTH;
+
+
+   
+
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
-	inputTimer = 0;
 
     playerItemText = game.add.text(10, 15, "0 Points", {
         font: "20px Arial",
         fill: " #6088ff",
         align: "left"
     });
+    playerItemText.setText("");
 
     GameOverText = game.add.text(game.width/2. - 75, game.height/2., "Game Over", {
         font: "25px Arial",
@@ -134,6 +129,31 @@ function create()
         align: "right"
     });
     GameOverText.setText("");
+
+    playerTween = game.add.tween(player).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
+    hexagonTween = game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
+
+    
+    MenuTextGameName = game.add.text(25, 15, "Hexagon Snake", {
+        font: "45px Arial",
+        fill: " #ff8860",
+        align: "center"
+    });
+
+    MenuTextInfo = game.add.text(25, 65, "Tap/Press Space to Start", {
+        font: "25px Arial",
+        fill: " #ff8860",
+        align: 'center'
+    });
+
+
+    MenuTextCredits = game.add.text(25, 390, "Created By \nJulian Dinges @Thunraz\nSimon Weis @Laguna_999", {
+        font: "15px Arial",
+        fill: " #ff8860",
+        align: 'left'
+    });
+
+
 }
 
 
@@ -141,19 +161,68 @@ function SwitchToGameOver()
 {
     IsGameOver = true;
 
-    playerTween = game.add.tween(player).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
-    hexagonTween = game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
+    playerTween.start();
+    hexagonTween.start();
+}
+
+function SwitchIntoGame()
+{
+    if(IsInMenu)
+    {
+        playerItemText.setText("0 Points");
+        MenuTextGameName.setText("");
+        MenuTextInfo.setText("");
+        MenuTextCredits.setText("");
+
+        for (var i = 0; i < config.WORLD_SIZE.x + 1; i++) 
+        {
+            for (var j = 1; j < config.WORLD_SIZE.y + 1; j++) 
+            {
+                hexagons.push(new Hexagon(i, j, game, hexagonParameters, 'tile'));
+            }
+        }
+
+        var first = game.add.sprite(0, 0, 'player');
+        first.anchor.x = 0.5;
+        first.anchor.y = 0.5;
+        player.add(first);
+
+        item = game.add.sprite(0,0,'item');
+        item.anchor.x = 0.25;
+        item.anchor.y = 0;
+        GetNewRandomItemPosition();
+        game.hexagonGroup.add(item);
+        IsInMenu = false;
+    }
+    else
+    {
+        if(IsGameOver)
+        {
+            resetGame();
+        }
+    }
 }
 
 function DoTouchInput(pointer)
 {
-    if( pointer.x < game.width/2)
+    if(!IsInMenu)
     {
-        Player1TurnLeft();
+        if( pointer.x < game.width/2)
+        {
+            Player1TurnLeft();
+        }
+        else
+        {
+            Player1TurnRight();
+        }
+        if(IsGameOver)
+        {
+            resetGame();
+        }
     }
     else
     {
-        Player1TurnRight();
+        SwitchIntoGame();
     }
 }
 
@@ -368,11 +437,12 @@ function repositionItem()
 {
     var itemScreenPos =getScreenPosition(itemPosition.x, itemPosition.y);
     item.x = itemScreenPos.x;
-    item.y = itemScreenPos.y + config.globalScreenOffsetY;
+    item.y = itemScreenPos.y;
 }
 
 function GetNewRandomItemPosition()
 {
+    console.log("new item");
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
 }
@@ -401,24 +471,30 @@ function getScreenPosition (tileX, tileY)
 
 function update()
 {
-    // Is the snake head on an item?
-    if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
+    if(!IsInMenu)
     {
-        playerTrail.push({ x: itemPosition.x, y: itemPosition.y });
-        playerItemCounter++;
-        GetNewRandomItemPosition();
-        playerItemText.setText(225 * playerItemCounter + ' Points');
-    }
+        // Is the snake head on an item?
+        if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
+        {
+            playerTrail.push({ x: itemPosition.x, y: itemPosition.y });
+            playerItemCounter++;
+            GetNewRandomItemPosition();
+            playerItemText.setText(225 * playerItemCounter + ' Points');
 
+            config.MOVEMENT_INCREMENT = 500 - (6*playerItemCounter);
+            if(config.MOVEMENT_INCREMENT <= 100)
+            {
+                config.MOVEMENT_INCREMENT = 100;
+            }
+        }
 
-	
-    //console.log(game.hexagonGroup.y);
-    if(IsGameOver)
-    {
-        GameOverText.setText("Game Over");
+        if(IsGameOver)
+        {
+            GameOverText.setText("Game Over");
+        }
+        DoPlayerMovement();
+        repositionItem();
     }
-    DoPlayerMovement();
-    repositionItem();
 }
 
 function resetGame()
@@ -447,5 +523,5 @@ function resetGame()
 
 window.onload = function ()
 {
-    game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+    game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 }
