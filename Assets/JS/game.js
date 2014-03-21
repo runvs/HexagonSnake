@@ -58,7 +58,8 @@ function preload()
 	game.load.image('player', 'Assets/GFX/player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
     //game.load.image('tileBlocked', 'Assets/GFX/tileBlocked.png');
-    game.load.image('item', 'Assets/GFX/tileBlocked.png');
+    //game.load.image('item', 'Assets/GFX/tileBlocked.png');
+    game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
 
     game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
 }
@@ -108,9 +109,11 @@ function create()
     cursors.r = game.input.keyboard.addKey(Phaser.Keyboard.R);
     cursors.r.onDown.add(resetGame, this);
 
-    item = game.add.sprite(0,0,'item');
+    item = game.add.sprite(0, 0, 'item');
     item.anchor.x = 0.25;
     item.anchor.y = 0;
+    item.animations.add('ani');
+    item.animations.play('ani', 8, true);
     GetNewRandomItemPosition();
 
 
