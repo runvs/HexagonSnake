@@ -60,7 +60,6 @@ function preload()
 {
 	game.load.image('player', 'Assets/GFX/player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
-    //game.load.image('item', 'Assets/GFX/tileBlocked.png');
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
 
     game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
@@ -80,10 +79,7 @@ function create()
 
     game.hexagonGroup = game.add.group();
 
-	
-
     player = game.add.group();
-    
 
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
@@ -99,14 +95,14 @@ function create()
     cursors.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     cursors.space.onDown.add(SwitchIntoGame, this);
 
+    item = game.add.sprite(0, 0, 'item');
+    item.anchor.x = 0.25;
+    item.anchor.y = 0;
     item.animations.add('ani');
     item.animations.play('ani', 8, true);
     GetNewRandomItemPosition();
-    GetNewRandomItemPosition();
-
 
     inputTimer = 0;
-
 
     playerTrail[0].x = config.WORLD_SIZE.x/2;
     playerTrail[0].y = config.WORLD_SIZE.y/2;
@@ -114,12 +110,8 @@ function create()
     playerTrail[1].y = config.WORLD_SIZE.y/2 - 1;
     player1Direction = DirectionEnum.SOUTH;
 
-
-   
-
     music = game.add.audio('music');
     music.play('', 0, 1, true);
-
 
     playerItemText = game.add.text(10, 15, "0 Points", {
         font: "20px Arial",
