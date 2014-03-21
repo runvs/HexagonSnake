@@ -16,6 +16,8 @@ var player;
 var item;
 var playerTrail = [{x: 0, y: 1}];
 
+var TouchInput;
+
 var cursors;
 
 var inputTimer = 0;
@@ -86,6 +88,9 @@ function create()
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
     cursors.left.onDown.add(Player1TurnLeft, this);
+    
+    game.input.onDown.add(DoTouchInput, this);
+
     playerTrail[0].x = config.WORLD_SIZE.x/2;
     playerTrail[0].y = config.WORLD_SIZE.y/2;
     player1Direction = DirectionEnum.SOUTH;
@@ -97,6 +102,8 @@ function create()
     item.anchor.x = 0.5;
     item.anchor.y = 0.5;
     GetNewRandomItemPosition();
+
+
 
     tileBlocked = game.add.sprite(0,0, "tileBlocked");
     
@@ -125,6 +132,18 @@ function SwitchToGameOver()
     IsGameOver = true;
     game.add.tween(config).to({globalScreenOffsetY : 1000}, 3200, Phaser.Easing.Cubic.In, true);
     game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
+}
+
+function DoTouchInput(pointer)
+{
+    if( pointer.x < game.width/2)
+    {
+        Player1TurnLeft();
+    }
+    else
+    {
+        Player1TurnRight();
+    }
 }
 
 
@@ -348,14 +367,13 @@ function getScreenPosition (tileX, tileY)
 
 function update()
 {
+
     if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
     {
         playerItemCounter++;
         GetNewRandomItemPosition();
         playerItemText.setText( 225*playerItemCounter + " Points" );
     }
-
-
 	
     //console.log(game.hexagonGroup.y);
     if(IsGameOver)
