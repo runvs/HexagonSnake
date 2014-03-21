@@ -69,6 +69,10 @@ function preload()
 
 function create()
 {
+    game.stage.scaleMode = Phaser.StageScaleMode.SHOW_ALL;
+    game.stage.scale.setShowAll();
+    game.stage.scale.refresh();
+
     IsInMenu = true;
     IsGameOver = false;
 
@@ -97,11 +101,12 @@ function create()
     cursors.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     cursors.space.onDown.add(SwitchIntoGame, this);
 
-    item = game.add.sprite(-100, 0, 'item');
+    item = game.add.sprite(0, 0, 'item');
     item.anchor.x = 0.25;
     item.anchor.y = 0;
     item.animations.add('ani');
     item.animations.play('ani', 8, true);
+    item.alpha = 0;
     GetNewRandomItemPosition();
 
     inputTimer = 0;
@@ -180,14 +185,8 @@ function SwitchIntoGame()
             }
         }
 
-        var first = game.add.sprite(0, 0, 'player');
-        first.anchor.x = 0.5;
-        first.anchor.y = 0.5;
-        player.add(first);
+        item.alpha = 1;
 
-        item = game.add.sprite(0, 0, 'item');
-        item.anchor.x = 0.25;
-        item.anchor.y = 0;
         GetNewRandomItemPosition();
         game.hexagonGroup.add(item);
         IsInMenu = false;
@@ -426,6 +425,7 @@ function repositionPlayerSprites()
             var p = game.add.sprite(newCoords.x, newCoords.y, 'player');
             p.anchor.x = 0.25;
             p.anchor.y = 0;
+            p.alpha = (i == 0 ? 1 : 0.6);
             player.add(p);
         }
     }
@@ -442,6 +442,14 @@ function GetNewRandomItemPosition()
 {
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
+
+    playerTrail.forEach(function(val) {
+        if(val.x == itemPosition.x && val.y == itemPosition.y)
+        {
+            GetNewRandomItemPosition();
+            return;
+        }
+    });
 }
 
 function MusicMutechange()
@@ -478,7 +486,7 @@ function update()
             GetNewRandomItemPosition();
             playerItemText.setText(225 * playerItemCounter + ' Points');
 
-            config.MOVEMENT_INCREMENT = 500 - (6*playerItemCounter);
+            config.MOVEMENT_INCREMENT = 500 - (6 * playerItemCounter);
             if(config.MOVEMENT_INCREMENT <= 100)
             {
                 config.MOVEMENT_INCREMENT = 100;
@@ -510,6 +518,7 @@ function resetGame()
         { x: config.WORLD_SIZE.x / 2, y: config.WORLD_SIZE.y / 2 - 1}
     ];
     playerItemCounter = 0;
+    config.MOVEMENT_INCREMENT = 500;
     playerItemText.setText(225 * playerItemCounter + ' Points');
 
     IsGameOver = false;
