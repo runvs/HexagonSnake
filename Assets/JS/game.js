@@ -7,7 +7,8 @@ var config =
         y: 8
     },
     INPUT_INCREMENT: 50,
-    MOVEMENT_INCREMENT: 500
+    MOVEMENT_INCREMENT: 500,
+    globalScreenOffsetY: 0
 };
 
 var game;
@@ -33,6 +34,7 @@ var music;
 var tileBlocked;
 
 var IsGameOver;
+var GameOverText;
 
 
 DirectionEnum = {
@@ -59,12 +61,15 @@ function preload()
 function create()
 {
     IsGameOver = false;
+    globalScreenOffsetY = 0;
 
     // Set hexagon parameters
     hexagonParameters.size = config.HEXAGON_SIZE;
     hexagonParameters.s = config.HEXAGON_SIZE / 2.0;
     hexagonParameters.h = config.HEXAGON_SIZE / 4.0;
     hexagonParameters.r = config.HEXAGON_SIZE / 2;
+
+    game.hexagonGroup = game.add.group();
 
 	for (var i = 0; i < config.WORLD_SIZE.x + 1; i++) 
 	{
@@ -106,8 +111,24 @@ function create()
         align: "left"
     });
 
-
+    GameOverText = game.add.text(game.width/2., game.height/2., "", {
+        font: "20px Arial",
+        fill: "#ffffff",
+        align: "center"
+    });
 }
+
+
+function SwitchToGameOver()
+{
+    IsGameOver = true;
+    game.add.tween(config).to({globalScreenOffsetY : 1000}, 3200, Phaser.Easing.Cubic.In, true);
+    game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
+}
+
+
+
+
 
 function Player1TurnRight()
 {
@@ -136,94 +157,113 @@ function Player1TurnLeft()
 
 function MovePlayer1North()
 {
-	if(playerTrail[0].y > 1)
-	{
-		playerTrail[0].y -= 1;
-	}
-    else 
+    if(!IsGameOver)
     {
-        IsGameOver = true;
+    	if(playerTrail[0].y > 1)
+    	{
+    		playerTrail[0].y -= 1;
+    	}
+        else 
+        {
+            SwitchToGameOver();
+        }
     }
 }
 
 function MovePlayer1NorthEast()
 {
-	if(playerTrail[0].x % 2 == 0)
-	{
-		MovePlayer1North();
-	}
-	
-    if(playerTrail[0].x < config.WORLD_SIZE.x)
-	{
-		playerTrail[0].x += 1;
-	}
-    else 
+    if(!IsGameOver)
     {
-        IsGameOver = true;
+    	if(playerTrail[0].x % 2 == 0)
+    	{
+    		MovePlayer1North();
+    	}
+    	
+        if(playerTrail[0].x < config.WORLD_SIZE.x)
+    	{
+    		playerTrail[0].x += 1;
+    	}
+        else 
+        {
+            SwitchToGameOver();
+        }
     }
 }
 
 function MovePlayer1SouthEast()
 {
-	if(playerTrail[0].x % 2 == 1)
-	{
-		MovePlayer1South();
-	}
-	
-    if(playerTrail[0].x < config.WORLD_SIZE.x)
-	{
-		playerTrail[0].x += 1;
-	}
-    else 
+    if(!IsGameOver)
     {
-        IsGameOver = true;
+    	if(playerTrail[0].x % 2 == 1)
+    	{
+    		MovePlayer1South();
+    	}
+    	
+        if(playerTrail[0].x < config.WORLD_SIZE.x)
+    	{
+    		playerTrail[0].x += 1;
+    	}
+        else 
+        {
+            SwitchToGameOver();
+        }
     }
 }
 
 
 function MovePlayer1South()
 {
-	if(playerTrail[0].y < config.WORLD_SIZE.y)
-	{
-		playerTrail[0].y += 1;
-	}
-    else 
+    if(!IsGameOver)
     {
-        IsGameOver = true;
+    	if(playerTrail[0].y < config.WORLD_SIZE.y)
+    	{
+    		playerTrail[0].y += 1;
+    	}
+        else 
+        {
+            SwitchToGameOver();
+        }
     }
 }
 
 function MovePlayer1SouthWest()
 {
-	if(playerTrail[0].x % 2 == 1)
-	{
-		MovePlayer1South();
-	}
-
-	if(playerTrail[0].x >= 1)
-	{
-		playerTrail[0].x -= 1;
-	}
-        else 
+    if(!IsGameOver)
     {
-        IsGameOver = true;
+    	if(playerTrail[0].x % 2 == 1)
+    	{
+    		MovePlayer1South();
+    	}
+
+    	if(playerTrail[0].x >= 1)
+    	{
+    		playerTrail[0].x -= 1;
+    	}
+        else 
+        {
+            SwitchToGameOver();
+        }
     }
 }
 
 function MovePlayer1NorthWest()
 {
-	if(playerTrail[0].x % 2 == 0)
-	{
-		MovePlayer1North();
-	}
-
-	if(playerTrail[0].x >= 1)
-	{
-		playerTrail[0].x -= 1;
-	}
-    else 
+    
+    if(!IsGameOver)
     {
-        IsGameOver = true;
+        if(!(playerTrail[0].x >= 1))
+        {
+            SwitchToGameOver();
+        }
+    	if(playerTrail[0].x % 2 == 0)
+    	{
+    		MovePlayer1North();
+    	}
+
+    	if(playerTrail[0].x >= 1)
+    	{
+    		playerTrail[0].x -= 1;
+    	}
     }
 }
 
@@ -257,9 +297,17 @@ function DoPlayerMovement()
 			MovePlayer1NorthWest();
 		}
 	}
+    repositionPlayer();
 
 }
 
+function repositionPlayer()
+{
+    var playerScreenPosition = getScreenPosition(playerTrail[0].x, playerTrail[0].y);
+    player.x = playerScreenPosition.x;
+    player.y = playerScreenPosition.y + config.globalScreenOffsetY;
+    //console.log(config.globalScreenOffsetY);
+}
 
 function repositionItem()
 {
@@ -280,6 +328,7 @@ function MusicMutechange()
 
 function getScreenPosition (tileX, tileY)
 {
+
     var pos = [{x: 0, y: 1}];
     pos.x = tileX * (config.HEXAGON_SIZE ) + (hexagonParameters.h);
 
@@ -289,7 +338,7 @@ function getScreenPosition (tileX, tileY)
     }
     else 
     {
-        pos.y = (tileY + 0.61) * (config.HEXAGON_SIZE+1) + tileY * hexagonParameters.h;
+        pos.y = (tileY + 0.61) * (config.HEXAGON_SIZE+1) + tileY * hexagonParameters.h + config.globalScreenOffsetY;
     }
 
     return pos;
@@ -297,9 +346,7 @@ function getScreenPosition (tileX, tileY)
 
 function update()
 {
-    var playerScreenPosition = getScreenPosition(playerTrail[0].x, playerTrail[0].y);
-    player.x = playerScreenPosition.x;
-    player.y = playerScreenPosition.y;
+    
 
     if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
     {
@@ -309,8 +356,13 @@ function update()
     }
 
 
-
-	DoPlayerMovement();
+	
+    //console.log(game.hexagonGroup.y);
+    if(IsGameOver)
+    {
+        GameOverText.setText("Game Over");
+    }
+    DoPlayerMovement();
 }
 
 window.onload = function ()
