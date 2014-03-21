@@ -38,6 +38,9 @@ var tileBlocked;
 var IsGameOver;
 var GameOverText;
 
+var playerTween;
+var hexagonTween;
+
 
 DirectionEnum = {
     NORTH     : 0,
@@ -100,7 +103,10 @@ function create()
     player1Direction = DirectionEnum.SOUTH;
 
     cursors.m = game.input.keyboard.addKey(Phaser.Keyboard.M);
-    cursors.m.onDown.add(MusicMutechange,this);
+    cursors.m.onDown.add(MusicMutechange, this);
+
+    cursors.r = game.input.keyboard.addKey(Phaser.Keyboard.R);
+    cursors.r.onDown.add(resetGame, this);
 
     item = game.add.sprite(0,0,'item');
     item.anchor.x = 0.25;
@@ -134,9 +140,9 @@ function create()
 function SwitchToGameOver()
 {
     IsGameOver = true;
-    game.add.tween(player).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
-    game.add.tween(config).to({globalScreenOffsetY : 1000}, 3200, Phaser.Easing.Cubic.In, true);
-    game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
+
+    playerTween = game.add.tween(player).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
+    hexagonTween = game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, true);
 }
 
 function DoTouchInput(pointer)
@@ -233,7 +239,6 @@ function MovePlayer1SouthEast()
     	}
     }
 }
-
 
 function MovePlayer1South()
 {
@@ -414,6 +419,30 @@ function update()
     }
     DoPlayerMovement();
     repositionItem();
+}
+
+function resetGame()
+{
+    playerTween.stop();
+    hexagonTween.stop();
+
+    player.y = 0;
+    game.hexagonGroup.y = 0;
+
+    playerTrail =
+    [
+        { x: config.WORLD_SIZE.x / 2, y: config.WORLD_SIZE.y / 2},
+        { x: config.WORLD_SIZE.x / 2, y: config.WORLD_SIZE.y / 2 - 1}
+    ];
+    playerItemCounter = 0;
+    playerItemText.setText(225 * playerItemCounter + ' Points');
+
+    IsGameOver = false;
+    GameOverText.setText('');
+
+    GetNewRandomItemPosition();
+
+    player1Direction = DirectionEnum.SOUTH;
 }
 
 window.onload = function ()
