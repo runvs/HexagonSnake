@@ -13,7 +13,10 @@ function Hexagon(x, y, game, p, spriteName)
         offX += 0;
     }
     
+
     this.graphics = game.add.sprite(offX, offY, spriteName);
+
+    game.hexagonGroup.add(this.graphics);
 
     var tween = game.add.tween(this.graphics).to({ alpha: 0.5 }, 500, null, true, x * 50 * (Math.random() * 0.8 + 1), true, true);
 
