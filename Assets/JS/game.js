@@ -25,7 +25,7 @@ var movementTimer = 0;
 var hexagonParameters = {};
 var hexagons = [];
 
-var itemPosition = {x:0, y:1};
+var itemPosition = {x : 0, y : 1};
 
 var playerItemCounter = 0;
 var playerItemText;
@@ -95,7 +95,7 @@ function create()
     cursors.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     cursors.space.onDown.add(SwitchIntoGame, this);
 
-    item = game.add.sprite(0, 0, 'item');
+    item = game.add.sprite(-100, 0, 'item');
     item.anchor.x = 0.25;
     item.anchor.y = 0;
     item.animations.add('ani');
@@ -113,6 +113,9 @@ function create()
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
+    playerTween = game.add.tween(player).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
+    hexagonTween = game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
+
     playerItemText = game.add.text(10, 15, "0 Points", {
         font: "20px Arial",
         fill: " #6088ff",
@@ -126,10 +129,6 @@ function create()
         align: "right"
     });
     GameOverText.setText("");
-
-    playerTween = game.add.tween(player).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
-    hexagonTween = game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
-
     
     MenuTextGameName = game.add.text(25, 15, "Hexagon Snake", {
         font: "45px Arial",
@@ -184,7 +183,7 @@ function SwitchIntoGame()
         first.anchor.y = 0.5;
         player.add(first);
 
-        item = game.add.sprite(0,0,'item');
+        item = game.add.sprite(0, 0, 'item');
         item.anchor.x = 0.25;
         item.anchor.y = 0;
         GetNewRandomItemPosition();
@@ -432,14 +431,13 @@ function repositionPlayerSprites()
 
 function repositionItem()
 {
-    var itemScreenPos =getScreenPosition(itemPosition.x, itemPosition.y);
+    var itemScreenPos = getScreenPosition(itemPosition.x, itemPosition.y);
     item.x = itemScreenPos.x;
     item.y = itemScreenPos.y;
 }
 
 function GetNewRandomItemPosition()
 {
-    console.log("new item");
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
 }
