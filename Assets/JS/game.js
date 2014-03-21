@@ -484,7 +484,7 @@ function update()
             GetNewRandomItemPosition();
             playerItemText.setText(225 * playerItemCounter + ' Points');
 
-            config.MOVEMENT_INCREMENT = 500 - (6*playerItemCounter);
+            config.MOVEMENT_INCREMENT = 500 - (6 * playerItemCounter);
             if(config.MOVEMENT_INCREMENT <= 100)
             {
                 config.MOVEMENT_INCREMENT = 100;
@@ -514,6 +514,7 @@ function resetGame()
         { x: config.WORLD_SIZE.x / 2, y: config.WORLD_SIZE.y / 2 - 1}
     ];
     playerItemCounter = 0;
+    config.MOVEMENT_INCREMENT = 500;
     playerItemText.setText(225 * playerItemCounter + ' Points');
 
     IsGameOver = false;
