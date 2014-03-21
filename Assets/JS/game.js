@@ -426,8 +426,8 @@ function repositionPlayerSprites()
         {
             var newCoords = getScreenPosition(playerTrail[i].x, playerTrail[i].y);
             var p = game.add.sprite(newCoords.x, newCoords.y, 'player');
-            p.anchor.x = 0.5;
-            p.anchor.y = 0.5;
+            p.anchor.x = 0.25;
+            p.anchor.y = 0;
             player.add(p);
         }
     }
