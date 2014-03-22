@@ -99,8 +99,12 @@ function create()
 
     cursors.r = game.input.keyboard.addKey(Phaser.Keyboard.R);
     cursors.r.onDown.add(resetGame, this);
+    
     cursors.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     cursors.space.onDown.add(SwitchIntoGame, this);
+
+    cursors.t = game.input.keyboard.addKey(Phaser.Keyboard.T);
+    cursors.t.onDown.add(tweetScore, this);
 
     item = game.add.sprite(0, 0, 'item');
     item.anchor.x = 0.25;
@@ -131,12 +135,13 @@ function create()
     });
     playerItemText.setText("");
 
-    GameOverText = game.add.text(game.width/2. - 115, game.height/2. - 40, "Game Over", {
+    GameOverText = game.add.text(game.width / 2, game.height / 2, "Game Over", {
         font: "25px Arial",
         fill: " #ff8860",
         align: "center"
     });
     GameOverText.setText("");
+    GameOverText.anchor.setTo(0.5, 0.5);
     
     MenuTextGameName = game.add.text(25, 15, "Hexagon Snake", {
         font: "45px Arial",
@@ -498,7 +503,7 @@ function update()
 
         if(IsGameOver)
         {
-            GameOverText.setText("Game Over\nTap/Press Space");
+            GameOverText.setText("Game Over\nTap/Press Space\nPress t to tweet your score!");
         }
         DoPlayerMovement();
         repositionItem();
@@ -528,6 +533,14 @@ function resetGame()
     GetNewRandomItemPosition();
 
     player1Direction = DirectionEnum.SOUTH;
+}
+
+function tweetScore()
+{
+    if(IsGameOver)
+    {
+        window.open('https://twitter.com/intent/tweet?url=http://j.mp/1oHrlCm&text=I%27ve%20just%20reached%20$score$%20on%20%23HexagonSnake'.replace('$score$', config.SCORE_MULTIPLIER * playerItemCounter + ' Points'));
+    }
 }
 
 window.onload = function ()
