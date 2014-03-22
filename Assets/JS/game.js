@@ -63,6 +63,7 @@ function preload()
 
     game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
     game.load.audio('pickup', ['Assets/Audio/pickup.ogg', 'Assets/Audio/pickup.mp3']);
+    game.load.audio('fail', ['Assets/Audio/fail.ogg', 'Assets/Audio/fail.mp3']);
 }
 
 function create()
@@ -88,6 +89,12 @@ function create()
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
     cursors.left.onDown.add(Player1TurnLeft, this);
+
+    cursors.a = game.input.keyboard.addKey(Phaser.Keyboard.A);
+    cursors.a.onDown.add(Player1TurnLeft,this);
+
+    cursors.d = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    cursors.d.onDown.add(Player1TurnRight,this);    
     
     game.input.onDown.add(DoTouchInput, this);
 
@@ -116,11 +123,11 @@ function create()
 
     inputTimer = 0;
 
-    playerTrail[0].x = config.WORLD_SIZE.x/2;
-    playerTrail[0].y = config.WORLD_SIZE.y/2;
-    playerTrail[1].x = config.WORLD_SIZE.x/2;
-    playerTrail[1].y = config.WORLD_SIZE.y/2 - 1;
-    player1Direction = DirectionEnum.SOUTH;
+    playerTrail[0].x = 2;
+    playerTrail[0].y = 2;
+    playerTrail[1].x = 1;
+    playerTrail[1].y = 1;
+    player1Direction = DirectionEnum.SOUTHEAST;
 
     music = game.add.audio('music');
     music.play('', 0, 1, true);
@@ -167,6 +174,8 @@ function SwitchToGameOver()
 {
     IsGameOver = true;
 
+    var failSound = game.add.audio('fail');
+    failSound.play("", 0, 0.125);
     playerTween.start();
     hexagonTween.start();
 }
@@ -520,8 +529,8 @@ function resetGame()
 
     playerTrail =
     [
-        { x: config.WORLD_SIZE.x / 2, y: config.WORLD_SIZE.y / 2},
-        { x: config.WORLD_SIZE.x / 2, y: config.WORLD_SIZE.y / 2 - 1}
+        { x: 2, y: 2},
+        { x: 1, y: 1}
     ];
     playerItemCounter = 0;
     config.MOVEMENT_INCREMENT = 500;
@@ -532,7 +541,7 @@ function resetGame()
 
     GetNewRandomItemPosition();
 
-    player1Direction = DirectionEnum.SOUTH;
+    player1Direction = DirectionEnum.SOUTHEAST;
 }
 
 function tweetScore()
