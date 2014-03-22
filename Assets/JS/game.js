@@ -60,7 +60,7 @@ var player1Direction = DirectionEnum.NORTHWEST;
 
 function preload()
 {
-	game.load.image('player', 'Assets/GFX/player.png');
+	game.load.image('player', 'Assets/GFX/Player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
 
