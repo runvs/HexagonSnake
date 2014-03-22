@@ -103,6 +103,9 @@ function create()
     cursors.t = game.input.keyboard.addKey(Phaser.Keyboard.T);
     cursors.t.onDown.add(tweetScore, this);
 
+    cursors.f = game.input.keyboard.addKey(Phaser.Keyboard.F);
+    cursors.f.onDown.add(function() { game.stage.scale.startFullScreen(); }, this);
+
     item = game.add.sprite(0, 0, 'item');
     item.anchor.x = 0.25;
     item.anchor.y = 0;
@@ -122,8 +125,8 @@ function create()
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
-    playerTween = game.add.tween(player).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
-    hexagonTween = game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
+    playerTween = game.add.tween(player).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+    hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
 
     playerItemText = game.add.text(10, 15, "0 Points", {
         font: "20px Arial",
@@ -143,13 +146,13 @@ function create()
     MenuTextGameName = game.add.text(25, 15, "Hexagon Snake", {
         font: "45px Arial",
         fill: " #ff8860",
-        align: "center"
+        align: "left"
     });
 
-    MenuTextInfo = game.add.text(25, 65, "Tap/Press Space to Start", {
+    MenuTextInfo = game.add.text(25, 65, "Tap/Press Space to Start\nPress F to go fullscreen", {
         font: "25px Arial",
         fill: " #ff8860",
-        align: 'center'
+        align: 'left'
     });
 
     MenuTextCredits = game.add.text(25, 390, "Created By \nJulian Dinges @Thunraz\nSimon Weis @Laguna_999", {
@@ -509,6 +512,9 @@ function resetGame()
     playerTween.stop();
     hexagonTween.stop();
 
+    playerTween = game.add.tween(player).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+    hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+
     player.y = 0;
     game.hexagonGroup.y = 0;
 
@@ -539,5 +545,17 @@ function tweetScore()
 
 window.onload = function ()
 {
-    game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+    game = new Phaser.Game(
+        //window.innerWidth * window.devicePixelRatio,
+        //window.innerHeight * window.devicePixelRatio,
+        800,
+        480,
+        Phaser.AUTO,
+        '',
+        {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    );
 }
