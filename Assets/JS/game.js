@@ -44,9 +44,6 @@ var GameOverText;
 var playerTween;
 var hexagonTween;
 
-
-
-
 DirectionEnum = {
     NORTH     : 0,
     NORTHEAST : 1,
@@ -155,14 +152,11 @@ function create()
         align: 'center'
     });
 
-
     MenuTextCredits = game.add.text(25, 390, "Created By \nJulian Dinges @Thunraz\nSimon Weis @Laguna_999", {
         font: "15px Arial",
         fill: " #ff8860",
         align: 'left'
     });
-
-
 }
 
 
