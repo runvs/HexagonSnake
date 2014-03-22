@@ -8,6 +8,7 @@ var config =
     },
     INPUT_INCREMENT: 50,
     MOVEMENT_INCREMENT: 500,
+    SCORE_MULTIPLIER: 225
 };
 
 var game;
@@ -484,7 +485,7 @@ function update()
             playerTrail.push({ x: itemPosition.x, y: itemPosition.y });
             playerItemCounter++;
             GetNewRandomItemPosition();
-            playerItemText.setText(225 * playerItemCounter + ' Points');
+            playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' Points');
 
             config.MOVEMENT_INCREMENT = 500 - (6 * playerItemCounter);
             if(config.MOVEMENT_INCREMENT <= 100)
@@ -519,7 +520,7 @@ function resetGame()
     ];
     playerItemCounter = 0;
     config.MOVEMENT_INCREMENT = 500;
-    playerItemText.setText(225 * playerItemCounter + ' Points');
+    playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' Points');
 
     IsGameOver = false;
     GameOverText.setText('');
