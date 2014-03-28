@@ -43,6 +43,8 @@ var GameOverText;
 
 var playerTween;
 var hexagonTween;
+var playerStartTween;
+var hexagonStartTween;
 
 DirectionEnum = {
     NORTH     : 0,
@@ -132,8 +134,12 @@ function create()
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
+    game.hexagonGroup.y = player.y = window.innerHeight * -window.devicePixelRatio;
+
     playerTween = game.add.tween(player).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
     hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+    playerStartTween = game.add.tween(player).to({ y: 0 }, 1000, Phaser.Easing.Cubic.Out, false);
+    hexagonStartTween = game.add.tween(game.hexagonGroup).to({ y: 0 }, 1000, Phaser.Easing.Cubic.Out, false);
 
     playerItemText = game.add.text(10, 15, "0 Points", {
         font: "20px Arial",
@@ -198,6 +204,9 @@ function SwitchIntoGame()
         }
 
         item.alpha = 1;
+
+        hexagonStartTween.start();
+        playerStartTween.start();
 
         GetNewRandomItemPosition();
         game.hexagonGroup.add(item);
