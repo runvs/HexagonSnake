@@ -38,13 +38,13 @@ var playerItemText;
 
 var music;
 
-var IsInMenu;
-var MenuTextGameName;
-var MenuTextInfo;
-var MenuTextCredits;
+var isInMenu;
+var menuTextGameName;
+var menuTextInfo;
+var menuTextCredits;
 
-var IsGameOver;
-var GameOverText;
+var isGameOver;
+var gameOverText;
 
 var playerTween;
 var hexagonTween;
@@ -79,8 +79,8 @@ function create()
     game.stage.scale.setShowAll();
     game.stage.scale.refresh();
 
-    IsInMenu = true;
-    IsGameOver = false;
+    isInMenu = true;
+    isGameOver = false;
 
     game.stage.backgroundColor = "#030710";
     // Set hexagon parameters
@@ -94,25 +94,25 @@ function create()
     playerGroup = game.add.group();
 
 	cursors = game.input.keyboard.createCursorKeys();
-    cursors.right.onDown.add(Player1TurnRight, this);
-    cursors.left.onDown.add(Player1TurnLeft, this);
+    cursors.right.onDown.add(player1TurnRight, this);
+    cursors.left.onDown.add(player1TurnLeft, this);
 
     cursors.a = game.input.keyboard.addKey(Phaser.Keyboard.A);
-    cursors.a.onDown.add(Player1TurnLeft,this);
+    cursors.a.onDown.add(player1TurnLeft,this);
 
     cursors.d = game.input.keyboard.addKey(Phaser.Keyboard.D);
-    cursors.d.onDown.add(Player1TurnRight,this);    
+    cursors.d.onDown.add(player1TurnRight,this);    
     
-    game.input.onDown.add(DoTouchInput, this);
+    game.input.onDown.add(doTouchInput, this);
 
     cursors.m = game.input.keyboard.addKey(Phaser.Keyboard.M);
-    cursors.m.onDown.add(MusicMutechange, this);
+    cursors.m.onDown.add(musicMutechange, this);
 
     cursors.r = game.input.keyboard.addKey(Phaser.Keyboard.R);
     cursors.r.onDown.add(resetGame, this);
     
     cursors.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    cursors.space.onDown.add(SwitchIntoGame, this);
+    cursors.space.onDown.add(switchIntoGame, this);
 
     cursors.t = game.input.keyboard.addKey(Phaser.Keyboard.T);
     cursors.t.onDown.add(tweetScore, this);
@@ -126,7 +126,7 @@ function create()
     item.animations.add('ani');
     item.animations.play('ani', 8, true);
     item.alpha = 0;
-    GetNewRandomItemPosition();
+    getNewRandomItemPosition();
 
     inputTimer = 0;
 
@@ -168,27 +168,27 @@ function create()
     });
     playerItemText.setText("");
 
-    GameOverText = game.add.text(game.width / 2, game.height / 2, "Game Over", {
+    gameOverText = game.add.text(game.width / 2, game.height / 2, "Game Over", {
         font: "25px Arial",
         fill: " #ff8860",
         align: "center"
     });
-    GameOverText.setText("");
-    GameOverText.anchor.setTo(0.5, 0.5);
+    gameOverText.setText("");
+    gameOverText.anchor.setTo(0.5, 0.5);
     
-    MenuTextGameName = game.add.text(25, 15, "Hexagon Snake", {
+    menuTextGameName = game.add.text(25, 15, "Hexagon Snake", {
         font: "45px Arial",
         fill: " #ff8860",
         align: "left"
     });
 
-    MenuTextInfo = game.add.text(25, 65, "Tap/Press Space to Start\nPress F to go fullscreen", {
+    menuTextInfo = game.add.text(25, 65, "Tap/Press Space to Start\nPress F to go fullscreen", {
         font: "25px Arial",
         fill: " #ff8860",
         align: 'left'
     });
 
-    MenuTextCredits = game.add.text(25, 390, "Created By \nJulian Dinges @Thunraz\nSimon Weis @Laguna_999", {
+    menuTextCredits = game.add.text(25, 390, "Created By \nJulian Dinges @Thunraz\nSimon Weis @Laguna_999", {
         font: "15px Arial",
         fill: " #ff8860",
         align: 'left'
@@ -214,9 +214,9 @@ function particleBurst() {
 
 }
 
-function SwitchToGameOver()
+function switchToGameOver()
 {
-    IsGameOver = true;
+    isGameOver = true;
 
     var failSound = game.add.audio('fail');
     failSound.play("", 0, 0.125);
@@ -224,14 +224,14 @@ function SwitchToGameOver()
     hexagonTween.start();
 }
 
-function SwitchIntoGame()
+function switchIntoGame()
 {
-    if(IsInMenu)
+    if(isInMenu)
     {
         playerItemText.setText("0 Points");
-        MenuTextGameName.setText("");
-        MenuTextInfo.setText("");
-        MenuTextCredits.setText("");
+        menuTextGameName.setText("");
+        menuTextInfo.setText("");
+        menuTextCredits.setText("");
 
         for (var i = 0; i < config.WORLD_SIZE.x + 1; i++) 
         {
@@ -246,46 +246,46 @@ function SwitchIntoGame()
         hexagonStartTween.start();
         playerStartTween.start();
 
-        GetNewRandomItemPosition();
+        getNewRandomItemPosition();
         game.hexagonGroup.add(item);
-        IsInMenu = false;
+        isInMenu = false;
     }
     else
     {
-        if(IsGameOver)
+        if(isGameOver)
         {
             resetGame();
         }
     }
 }
 
-function DoTouchInput(pointer)
+function doTouchInput(pointer)
 {
-    if(!IsInMenu)
+    if(!isInMenu)
     {
         if( pointer.x < game.width/2)
         {
-            Player1TurnLeft();
+            player1TurnLeft();
         }
         else
         {
-            Player1TurnRight();
+            player1TurnRight();
         }
-        if(IsGameOver)
+        if(isGameOver)
         {
             resetGame();
         }
     }
     else
     {
-        SwitchIntoGame();
+        switchIntoGame();
     }
 }
 
 
-function Player1TurnRight()
+function player1TurnRight()
 {
-    if(!IsGameOver)
+    if(!isGameOver)
     {
         player1Direction++;
         if(player1Direction > DirectionEnum.NORTHWEST )
@@ -295,9 +295,9 @@ function Player1TurnRight()
     }
 }
 
-function Player1TurnLeft()
+function player1TurnLeft()
 {
-    if(!IsGameOver)
+    if(!isGameOver)
     {
         player1Direction--;
         if(player1Direction < DirectionEnum.NORTH)
@@ -308,9 +308,9 @@ function Player1TurnLeft()
 }
 
 
-function MovePlayer1North()
+function movePlayer1North()
 {
-    if(!IsGameOver)
+    if(!isGameOver)
     {
     	if(playerTrail[0].y > 1)
     	{
@@ -318,23 +318,23 @@ function MovePlayer1North()
     	}
         else 
         {
-            SwitchToGameOver();
+            switchToGameOver();
         }
     }
 }
 
-function MovePlayer1NorthEast()
+function movePlayer1NorthEast()
 {
-    if(!IsGameOver)
+    if(!isGameOver)
     {
         if(!(playerTrail[0].x < config.WORLD_SIZE.x))
         {
-            SwitchToGameOver();
+            switchToGameOver();
         }
 
     	if(playerTrail[0].x % 2 == 0)
     	{
-    		MovePlayer1North();
+    		movePlayer1North();
     	}
     	
         if(playerTrail[0].x < config.WORLD_SIZE.x)
@@ -344,18 +344,18 @@ function MovePlayer1NorthEast()
     }
 }
 
-function MovePlayer1SouthEast()
+function movePlayer1SouthEast()
 {
-    if(!IsGameOver)
+    if(!isGameOver)
     {
         if(!(playerTrail[0].x < config.WORLD_SIZE.x))
         {
-            SwitchToGameOver();
+            switchToGameOver();
         }
 
     	if(playerTrail[0].x % 2 == 1)
     	{
-    		MovePlayer1South();
+    		movePlayer1South();
     	}
     	
         if(playerTrail[0].x < config.WORLD_SIZE.x)
@@ -365,9 +365,9 @@ function MovePlayer1SouthEast()
     }
 }
 
-function MovePlayer1South()
+function movePlayer1South()
 {
-    if(!IsGameOver)
+    if(!isGameOver)
     {
     	if(playerTrail[0].y < config.WORLD_SIZE.y)
     	{
@@ -375,22 +375,22 @@ function MovePlayer1South()
     	}
         else 
         {
-            SwitchToGameOver();
+            switchToGameOver();
         }
     }
 }
 
-function MovePlayer1SouthWest()
+function movePlayer1SouthWest()
 {
-    if(!IsGameOver)
+    if(!isGameOver)
     {
         if(!(playerTrail[0].x >= 1))
         {
-            SwitchToGameOver();
+            switchToGameOver();
         }
     	if(playerTrail[0].x % 2 == 1)
     	{
-    		MovePlayer1South();
+    		movePlayer1South();
     	}
 
     	if(playerTrail[0].x >= 1)
@@ -401,18 +401,18 @@ function MovePlayer1SouthWest()
     }
 }
 
-function MovePlayer1NorthWest()
+function movePlayer1NorthWest()
 {
     
-    if(!IsGameOver)
+    if(!isGameOver)
     {
         if(!(playerTrail[0].x >= 1))
         {
-            SwitchToGameOver();
+            switchToGameOver();
         }
     	if(playerTrail[0].x % 2 == 0)
     	{
-    		MovePlayer1North();
+    		movePlayer1North();
     	}
 
     	if(playerTrail[0].x >= 1)
@@ -422,9 +422,9 @@ function MovePlayer1NorthWest()
     }
 }
 
-function DoPlayerMovement()
+function doPlayerMovement()
 {
-	if(game.time.now > movementTimer && !IsGameOver)
+	if(game.time.now > movementTimer && !isGameOver)
 	{
 		movementTimer = game.time.now + config.MOVEMENT_INCREMENT;
 
@@ -436,27 +436,27 @@ function DoPlayerMovement()
 
 		if(player1Direction == DirectionEnum.NORTH)
 		{
-			MovePlayer1North();
+			movePlayer1North();
 		}
 		else if(player1Direction == DirectionEnum.NORTHEAST)
 		{
-			MovePlayer1NorthEast();
+			movePlayer1NorthEast();
 		}
 		else if(player1Direction == DirectionEnum.SOUTHEAST)
 		{
-			MovePlayer1SouthEast();
+			movePlayer1SouthEast();
 		}
 		else if(player1Direction == DirectionEnum.SOUTH)
 		{
-			MovePlayer1South();
+			movePlayer1South();
 		}
 		else if(player1Direction == DirectionEnum.SOUTHWEST)
 		{
-			MovePlayer1SouthWest();
+			movePlayer1SouthWest();
 		}
 		else if(player1Direction == DirectionEnum.NORTHWEST)
 		{
-			MovePlayer1NorthWest();
+			movePlayer1NorthWest();
 		}
 
         // is the head of the Snake on any of its tail poisitions?
@@ -464,7 +464,7 @@ function DoPlayerMovement()
         {
             if(playerTrail[0].x == playerTrail[i].x && playerTrail[0].y == playerTrail[i].y)
             {
-                SwitchToGameOver();
+                switchToGameOver();
             }
         }
 
@@ -475,7 +475,7 @@ function DoPlayerMovement()
 
 function repositionPlayerSprites()
 {
-    if(!IsGameOver)
+    if(!isGameOver)
     {
         playerGroup.removeAll();
         for(var i = 0; i < playerTrail.length; i++)
@@ -497,7 +497,7 @@ function repositionItem()
     item.y = itemScreenPos.y;
 }
 
-function GetNewRandomItemPosition()
+function getNewRandomItemPosition()
 {
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
@@ -505,13 +505,13 @@ function GetNewRandomItemPosition()
     playerTrail.forEach(function(val) {
         if(val.x == itemPosition.x && val.y == itemPosition.y)
         {
-            GetNewRandomItemPosition();
+            getNewRandomItemPosition();
             return;
         }
     });
 }
 
-function MusicMutechange()
+function musicMutechange()
 {
     game.sound.mute = !game.sound.mute;
 }
@@ -535,14 +535,14 @@ function getScreenPosition (tileX, tileY)
 
 function update()
 {
-    if(!IsInMenu)
+    if(!isInMenu)
     {
         // Is the snake head on an item?
         if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
         {
             playerTrail.push({ x: itemPosition.x, y: itemPosition.y });
             playerItemCounter++;
-            GetNewRandomItemPosition();
+            getNewRandomItemPosition();
             playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' Points');
 
             config.MOVEMENT_INCREMENT = 500 - (6 * playerItemCounter);
@@ -555,11 +555,11 @@ function update()
             particleBurst();
         }
 
-        if(IsGameOver)
+        if(isGameOver)
         {
-            GameOverText.setText("Game Over\nTap/Press Space\nPress t to tweet your score!");
+            gameOverText.setText("Game Over\nTap/Press Space\nPress t to tweet your score!");
         }
-        DoPlayerMovement();
+        doPlayerMovement();
         repositionItem();
     }
 }
@@ -584,17 +584,17 @@ function resetGame()
     config.MOVEMENT_INCREMENT = 500;
     playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' Points');
 
-    IsGameOver = false;
-    GameOverText.setText('');
+    isGameOver = false;
+    gameOverText.setText('');
 
-    GetNewRandomItemPosition();
+    getNewRandomItemPosition();
 
     player1Direction = DirectionEnum.SOUTHEAST;
 }
 
 function tweetScore()
 {
-    if(IsGameOver)
+    if(isGameOver)
     {
         window.open('https://twitter.com/intent/tweet?url=http://j.mp/1oHrlCm&text=I%27ve%20just%20reached%20$score$%20on%20%23HexagonSnake'.replace('$score$', config.SCORE_MULTIPLIER * playerItemCounter + ' Points'));
     }
