@@ -3,8 +3,8 @@ var config =
     HEXAGON_SIZE: 50,
     WORLD_SIZE:
     {
-        x: 14,
-        y: 6
+        x: 6,
+        y: 10
     },
     INPUT_INCREMENT: 50,
     MOVEMENT_INCREMENT: 500,
@@ -19,7 +19,7 @@ var item;
 var playerGroup;
 var playerTrail = [{x: 0, y: 1}, {x: 0, y: 1}];
 
-var particleEmitter;
+var particleEmitterItemPickup;
 
 var cursors;
 
@@ -137,20 +137,15 @@ function create()
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
-    particleEmitter = game.add.emitter(0, 0, 100);
-    particleEmitter.makeParticles('item');  
-    
-    particleEmitter.alpha = 0.5;
+    particleEmitterItemPickup = game.add.emitter(0, 0, 100);
+    particleEmitterItemPickup.makeParticles('item');  
+    particleEmitterItemPickup.alpha = 1;
+    particleEmitterItemPickup.maxParticleScale= 0.5;
+    particleEmitterItemPickup.minParticleScale = 0.25;
+    particleEmitterItemPickup.minParticleSpeed.setTo(-config.PARTICLESPEEDRANGE, -config.PARTICLESPEEDRANGE);
+    particleEmitterItemPickup.maxParticleSpeed.setTo(config.PARTICLESPEEDRANGE, config.PARTICLESPEEDRANGE);
+    particleEmitterItemPickup.gravity = 200;
 
-    particleEmitter.maxParticleScale= 0.5;
-    particleEmitter.minParticleScale = 0.25;
-
-    particleEmitter.minParticleSpeed.setTo(-config.PARTICLESPEEDRANGE, -config.PARTICLESPEEDRANGE);
-    particleEmitter.maxParticleSpeed.setTo(config.PARTICLESPEEDRANGE, config.PARTICLESPEEDRANGE);
-
-
-
-    particleEmitter.gravity = 200;
 
     game.hexagonGroup.y = playerGroup.y = window.innerHeight * -window.devicePixelRatio;
 
@@ -194,23 +189,25 @@ function create()
 }
 
 
-function particleBurst() {
+function particleBurstItemPickup() 
+{
 
     //  Position the emitter where the mouse/touch event was
     var pos =  getScreenPosition(playerTrail[0].x, playerTrail[0].y);
-    particleEmitter.x = pos.x + hexagonParameters.h;
-    particleEmitter.y = pos.y + hexagonParameters.s;
+    particleEmitterItemPickup.x = pos.x + hexagonParameters.h;
+    particleEmitterItemPickup.y = pos.y + hexagonParameters.s;
 
     //  The first parameter sets the effect to "explode" which means all particles are emitted at once
     //  The second gives each particle a 2000ms lifespan
     //  The third is ignored when using burst/explode mode
     //  The final parameter (10) is how many particles will be emitted in this single burst
-    particleEmitter.start(true, config.PARTICLEFADEOUTTIME, null, config.PARTICLENUMBER);
+    particleEmitterItemPickup.start(true, config.PARTICLEFADEOUTTIME, null, config.PARTICLENUMBER);
 
-    var particleAlphaTween = game.add.tween(particleEmitter).to({ alpha: 0 }, config.PARTICLEFADEOUTTIME, Phaser.Easing.Linear.Out, true);
-    particleAlphaTween.onComplete.add(function (){particleEmitter.alpha = 1;} , this);
-
+    var particleAlphaTween = game.add.tween(particleEmitterItemPickup).to({ alpha: 0 }, config.PARTICLEFADEOUTTIME, Phaser.Easing.Linear.Out, true);
+    particleAlphaTween.onComplete.add(function (){particleEmitterItemPickup.alpha = 1;} , this);
 }
+
+
 
 function switchToGameOver()
 {
@@ -550,7 +547,7 @@ function update()
             }
             var pickupSound = game.add.audio('pickup');
             pickupSound.play("", 0, 0.25);
-            particleBurst();
+            particleBurstItemPickup();
         }
 
         if(isGameOver)
@@ -603,8 +600,8 @@ window.onload = function ()
     game = new Phaser.Game(
         //window.innerWidth * window.devicePixelRatio,
         //window.innerHeight * window.devicePixelRatio,
-        800,
         480,
+        800,
         Phaser.AUTO,
         '',
         {
