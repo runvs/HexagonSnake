@@ -21,8 +21,6 @@ var playerTrail = [{x: 0, y: 1}, {x: 0, y: 1}];
 
 var particleEmitter;
 
-var TouchInput;
-
 var cursors;
 
 var inputTimer = 0;
