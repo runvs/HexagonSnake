@@ -60,7 +60,7 @@ DirectionEnum = {
     NORTHWEST : 5
 }
 
-var player1Direction = DirectionEnum.NORTHWEST;
+var player1Direction;
 
 function preload()
 {
@@ -134,7 +134,7 @@ function create()
     playerTrail[0].y = 2;
     playerTrail[1].x = 1;
     playerTrail[1].y = 1;
-    player1Direction = DirectionEnum.SOUTHEAST;
+    player1Direction = DirectionEnum.SOUTH;
 
     music = game.add.audio('music');
     music.play('', 0, 1, true);
