@@ -8,6 +8,7 @@ var config =
     },
     INPUT_INCREMENT: 50,
     MOVEMENT_INCREMENT: 500,
+    SCORE_MULTIPLIER: 225
 };
 
 var game;
@@ -43,8 +44,6 @@ var GameOverText;
 var playerTween;
 var hexagonTween;
 
-
-
 DirectionEnum = {
     NORTH     : 0,
     NORTHEAST : 1,
@@ -58,11 +57,13 @@ var player1Direction = DirectionEnum.NORTHWEST;
 
 function preload()
 {
-	game.load.image('player', 'Assets/GFX/player.png');
+	game.load.image('player', 'Assets/GFX/Player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
 
     game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
+    game.load.audio('pickup', ['Assets/Audio/pickup.ogg', 'Assets/Audio/pickup.mp3']);
+    game.load.audio('fail', ['Assets/Audio/fail.ogg', 'Assets/Audio/fail.mp3']);
 }
 
 function create()
@@ -88,6 +89,12 @@ function create()
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
     cursors.left.onDown.add(Player1TurnLeft, this);
+
+    cursors.a = game.input.keyboard.addKey(Phaser.Keyboard.A);
+    cursors.a.onDown.add(Player1TurnLeft,this);
+
+    cursors.d = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    cursors.d.onDown.add(Player1TurnRight,this);    
     
     game.input.onDown.add(DoTouchInput, this);
 
@@ -96,8 +103,15 @@ function create()
 
     cursors.r = game.input.keyboard.addKey(Phaser.Keyboard.R);
     cursors.r.onDown.add(resetGame, this);
+    
     cursors.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     cursors.space.onDown.add(SwitchIntoGame, this);
+
+    cursors.t = game.input.keyboard.addKey(Phaser.Keyboard.T);
+    cursors.t.onDown.add(tweetScore, this);
+
+    cursors.f = game.input.keyboard.addKey(Phaser.Keyboard.F);
+    cursors.f.onDown.add(function() { game.stage.scale.startFullScreen(); }, this);
 
     item = game.add.sprite(0, 0, 'item');
     item.anchor.x = 0.25;
@@ -109,17 +123,17 @@ function create()
 
     inputTimer = 0;
 
-    playerTrail[0].x = config.WORLD_SIZE.x/2;
-    playerTrail[0].y = config.WORLD_SIZE.y/2;
-    playerTrail[1].x = config.WORLD_SIZE.x/2;
-    playerTrail[1].y = config.WORLD_SIZE.y/2 - 1;
-    player1Direction = DirectionEnum.SOUTH;
+    playerTrail[0].x = 2;
+    playerTrail[0].y = 2;
+    playerTrail[1].x = 1;
+    playerTrail[1].y = 1;
+    player1Direction = DirectionEnum.SOUTHEAST;
 
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
-    playerTween = game.add.tween(player).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
-    hexagonTween = game.add.tween(game.hexagonGroup).to({y : 1000}, 3200, Phaser.Easing.Cubic.In, false);
+    playerTween = game.add.tween(player).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+    hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
 
     playerItemText = game.add.text(10, 15, "0 Points", {
         font: "20px Arial",
@@ -128,33 +142,31 @@ function create()
     });
     playerItemText.setText("");
 
-    GameOverText = game.add.text(game.width/2. - 75, game.height/2., "Game Over", {
+    GameOverText = game.add.text(game.width / 2, game.height / 2, "Game Over", {
         font: "25px Arial",
         fill: " #ff8860",
-        align: "right"
+        align: "center"
     });
     GameOverText.setText("");
+    GameOverText.anchor.setTo(0.5, 0.5);
     
     MenuTextGameName = game.add.text(25, 15, "Hexagon Snake", {
         font: "45px Arial",
         fill: " #ff8860",
-        align: "center"
+        align: "left"
     });
 
-    MenuTextInfo = game.add.text(25, 65, "Tap/Press Space to Start", {
+    MenuTextInfo = game.add.text(25, 65, "Tap/Press Space to Start\nPress F to go fullscreen", {
         font: "25px Arial",
         fill: " #ff8860",
-        align: 'center'
+        align: 'left'
     });
-
 
     MenuTextCredits = game.add.text(25, 390, "Created By \nJulian Dinges @Thunraz\nSimon Weis @Laguna_999", {
         font: "15px Arial",
         fill: " #ff8860",
         align: 'left'
     });
-
-
 }
 
 
@@ -162,6 +174,8 @@ function SwitchToGameOver()
 {
     IsGameOver = true;
 
+    var failSound = game.add.audio('fail');
+    failSound.play("", 0, 0.125);
     playerTween.start();
     hexagonTween.start();
 }
@@ -482,18 +496,20 @@ function update()
             playerTrail.push({ x: itemPosition.x, y: itemPosition.y });
             playerItemCounter++;
             GetNewRandomItemPosition();
-            playerItemText.setText(225 * playerItemCounter + ' Points');
+            playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' Points');
 
             config.MOVEMENT_INCREMENT = 500 - (6 * playerItemCounter);
             if(config.MOVEMENT_INCREMENT <= 100)
             {
                 config.MOVEMENT_INCREMENT = 100;
             }
+            var pickupSound = game.add.audio('pickup');
+            pickupSound.play("", 0, 0.25);
         }
 
         if(IsGameOver)
         {
-            GameOverText.setText("Game Over");
+            GameOverText.setText("Game Over\nTap/Press Space\nPress t to tweet your score!");
         }
         DoPlayerMovement();
         repositionItem();
@@ -505,27 +521,50 @@ function resetGame()
     playerTween.stop();
     hexagonTween.stop();
 
+    playerTween = game.add.tween(player).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+    hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+
     player.y = 0;
     game.hexagonGroup.y = 0;
 
     playerTrail =
     [
-        { x: config.WORLD_SIZE.x / 2, y: config.WORLD_SIZE.y / 2},
-        { x: config.WORLD_SIZE.x / 2, y: config.WORLD_SIZE.y / 2 - 1}
+        { x: 2, y: 2},
+        { x: 1, y: 1}
     ];
     playerItemCounter = 0;
     config.MOVEMENT_INCREMENT = 500;
-    playerItemText.setText(225 * playerItemCounter + ' Points');
+    playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' Points');
 
     IsGameOver = false;
     GameOverText.setText('');
 
     GetNewRandomItemPosition();
 
-    player1Direction = DirectionEnum.SOUTH;
+    player1Direction = DirectionEnum.SOUTHEAST;
+}
+
+function tweetScore()
+{
+    if(IsGameOver)
+    {
+        window.open('https://twitter.com/intent/tweet?url=http://j.mp/1oHrlCm&text=I%27ve%20just%20reached%20$score$%20on%20%23HexagonSnake'.replace('$score$', config.SCORE_MULTIPLIER * playerItemCounter + ' Points'));
+    }
 }
 
 window.onload = function ()
 {
-    game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+    game = new Phaser.Game(
+        //window.innerWidth * window.devicePixelRatio,
+        //window.innerHeight * window.devicePixelRatio,
+        800,
+        480,
+        Phaser.AUTO,
+        '',
+        {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    );
 }
