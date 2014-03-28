@@ -8,13 +8,17 @@ var config =
     },
     INPUT_INCREMENT: 50,
     MOVEMENT_INCREMENT: 500,
-    SCORE_MULTIPLIER: 225
+    SCORE_MULTIPLIER: 225,
+    PARTICLEFADEOUTTIME: 500,
+    PARTICLENUMBER:15
 };
 
 var game;
 var item;
 var player;
 var playerTrail = [{x: 0, y: 1}, {x: 0, y: 1}];
+
+var particleEmitter;
 
 var TouchInput;
 
@@ -80,7 +84,7 @@ function create()
     hexagonParameters.size = config.HEXAGON_SIZE;
     hexagonParameters.s = config.HEXAGON_SIZE / 2.0;
     hexagonParameters.h = config.HEXAGON_SIZE / 4.0;
-    hexagonParameters.r = config.HEXAGON_SIZE / 2;
+    hexagonParameters.r = config.HEXAGON_SIZE / 2.0;
 
     game.hexagonGroup = game.add.group();
 
@@ -132,6 +136,17 @@ function create()
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
+    particleEmitter = game.add.emitter(0, 0, 100);
+    particleEmitter.makeParticles('item');  
+    
+    particleEmitter.alpha = 0.5;
+
+    particleEmitter.maxParticleScale= 0.5;
+    particleEmitter.minParticleScale = 0.5;
+
+    particleEmitter.gravity = 200;
+
+
     playerTween = game.add.tween(player).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
     hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
 
@@ -169,6 +184,24 @@ function create()
     });
 }
 
+
+function particleBurst() {
+
+    //  Position the emitter where the mouse/touch event was
+    var pos =  getScreenPosition(playerTrail[0].x, playerTrail[0].y);
+    particleEmitter.x = pos.x + hexagonParameters.h;
+    particleEmitter.y = pos.y + hexagonParameters.s;
+
+    //  The first parameter sets the effect to "explode" which means all particles are emitted at once
+    //  The second gives each particle a 2000ms lifespan
+    //  The third is ignored when using burst/explode mode
+    //  The final parameter (10) is how many particles will be emitted in this single burst
+    particleEmitter.start(true, config.PARTICLEFADEOUTTIME, null, config.PARTICLENUMBER);
+
+    var particleAlphaTween = game.add.tween(particleEmitter).to({ alpha: 0 }, config.PARTICLEFADEOUTTIME, Phaser.Easing.Cubic.Out, true);
+    particleAlphaTween.onComplete.add(function (){particleEmitter.alpha = 1;} , this);
+
+}
 
 function SwitchToGameOver()
 {
@@ -505,6 +538,7 @@ function update()
             }
             var pickupSound = game.add.audio('pickup');
             pickupSound.play("", 0, 0.25);
+            particleBurst();
         }
 
         if(IsGameOver)
