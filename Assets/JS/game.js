@@ -3,7 +3,7 @@ var config =
     HEXAGON_SIZE: 50,
     WORLD_SIZE:
     {
-        x: 6,
+        x: 8,
         y: 10
     },
     INPUT_INCREMENT: 50,
@@ -39,6 +39,8 @@ var music;
 var isInMenu;
 var menuTextGameName;
 var menuTextInfo;
+var menuTextTutorial1;
+var menuTextTutorial2;
 var menuTextCredits;
 
 var isGameOver;
@@ -52,6 +54,8 @@ var hexagonStartTween;
 var muteButton, twitterButton;
 
 var tweensFinished = false;
+
+var lang = navigator.language.substr(0, 2);
 
 DirectionEnum = {
     NORTH     : 0,
@@ -164,38 +168,9 @@ function create()
         tweensFinished = true;
     }, this);
 
-    playerItemText = game.add.text(10, 15, "0 Points", {
-        font: "20px Arial",
-        fill: " #6088ff",
-        align: "left"
-    });
-    playerItemText.setText("");
+  
 
-    gameOverText = game.add.text(game.width / 2, game.height / 2, "Game Over", {
-        font: "25px Arial",
-        fill: " #ff8860",
-        align: "center"
-    });
-    gameOverText.setText("");
-    gameOverText.anchor.setTo(0.5, 0.5);
-    
-    menuTextGameName = game.add.text(25, 15, "Hexagon Snake", {
-        font: "45px Arial",
-        fill: " #ff8860",
-        align: "left"
-    });
-
-    menuTextInfo = game.add.text(25, 65, "Tap/Press Space to Start\nPress F to go fullscreen", {
-        font: "25px Arial",
-        fill: " #ff8860",
-        align: 'left'
-    });
-
-    menuTextCredits = game.add.text(25, 390, "Created By \nJulian Dinges @Thunraz\nSimon Weis @Laguna_999", {
-        font: "15px Arial",
-        fill: " #ff8860",
-        align: 'left'
-    });
+    createText();
 
     muteButton = game.add.button(game.width, 0, 'mute', musicMutechange);
     muteButton.anchor.setTo(1, 0);
@@ -203,8 +178,97 @@ function create()
     twitterButton = game.add.button(game.width, 0, 'twitter', tweetScore);
     twitterButton.anchor.setTo(1.9, -0.7);
     twitterButton.visible = false;
+
+    
 }
 
+
+function createText()
+{
+      var textLeftMargin = game.width/20;
+    var textTopMargin = game.width/20;
+     playerItemText = game.add.text(textLeftMargin, textTopMargin, "0 " + i18n[lang][1] , {
+        font: "20px Arial",
+        fill: " #6088ff",
+        align: "left"
+    });
+    playerItemText.anchor.setTo(0, 0.5);
+    playerItemText.setText("");
+
+    gameOverText = game.add.text(game.width / 2, game.height / 2, i18n[lang][2], {
+        font: "25px Arial",
+        fill: " #ff8860",
+        align: "center"
+    });
+    gameOverText.setText("");
+    gameOverText.anchor.setTo(0.5, 0.5);
+
+
+    menuTextGameName = game.add.text(textLeftMargin, textTopMargin, i18n[lang][0], {
+        font: "45px Arial",
+        fill: " #ff8860",
+        align: "left"
+    });
+    menuTextGameName.anchor.setTo(0,0.5);
+
+    menuTextCredits = game.add.text(textLeftMargin, game.height - textTopMargin, i18n[lang][11], {
+        font: "15px Arial",
+        fill: " #ff8860",
+        align: 'left'
+    });
+    menuTextCredits.anchor.setTo(0,1);
+
+
+    // plattform dependent text
+    if (game.device.desktop)
+    {
+        menuTextInfo = game.add.text(textLeftMargin, 65, i18n[lang][3], {
+            font: "25px Arial",
+            fill: " #ff8860",
+            align: 'left'
+        });
+        menuTextInfo.anchor.setTo(0,0.5);
+
+        menuTextTutorial1 = game.add.text(textLeftMargin, game.height/2 - 25, i18n[lang][5], {
+            font: "25px Arial",
+            fill: " #ff8860",
+            align: 'left'
+        });
+        menuTextTutorial1.anchor.setTo(0,0.5);
+
+        menuTextTutorial2 = game.add.text(game.width - textLeftMargin, game.height/2 + 25, i18n[lang][7], {
+            font: "25px Arial",
+            fill: " #ff8860",
+            align: 'left'
+        });
+        menuTextTutorial2.anchor.setTo(1,0.5);
+
+     
+    }
+    else    // on mobile devices
+    {
+        menuTextInfo = game.add.text(textLeftMargin, 65, i18n[lang][4], {
+            font: "25px Arial",
+            fill: " #ff8860",
+            align: 'left'
+        });
+        menuTextInfo.anchor.setTo(0,0.5);
+
+        menuTextTutorial1 = game.add.text(textLeftMargin, game.height/2 - 25,  i18n[lang][6], {
+            font: "25px Arial",
+            fill: " #ff8860",
+            align: 'left'
+        });
+        menuTextTutorial1.anchor.setTo(0,0.5);
+
+        menuTextTutorial2 = game.add.text(game.width - textLeftMargin, game.height/2 + 25, i18n[lang][8], {
+            font: "25px Arial",
+            fill: " #ff8860",
+            align: 'left'
+        });
+        menuTextTutorial2.anchor.setTo(1,0.5);
+    }
+}
 
 function particleBurstItemPickup() 
 {
@@ -242,10 +306,12 @@ function switchIntoGame()
 {
     if(isInMenu)
     {
-        playerItemText.setText("0 Points");
+        playerItemText.setText("0 " + i18n[lang][1]);
         menuTextGameName.setText("");
         menuTextInfo.setText("");
         menuTextCredits.setText("");
+        menuTextTutorial1.setText("");
+        menuTextTutorial2.setText("");
 
         for (var i = 0; i < config.WORLD_SIZE.x + 1; i++) 
         {
@@ -568,7 +634,7 @@ function update()
             playerTrail.push({ x: itemPosition.x, y: itemPosition.y });
             playerItemCounter++;
             getNewRandomItemPosition();
-            playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' Points');
+            playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' ' + i18n[lang][1]);
 
             config.MOVEMENT_INCREMENT = 500 - (6 * playerItemCounter);
             if(config.MOVEMENT_INCREMENT <= 100)
@@ -582,7 +648,19 @@ function update()
 
         if(isGameOver)
         {
-            gameOverText.setText("Game Over\nTap/Press Space\nPress t to tweet your score!");
+            var deviceDependentRestartText ="";
+            if (game.device.desktop)
+            {  
+                deviceDependentRestartText = i18n[lang][9];
+            }
+            else
+            {
+                deviceDependentRestartText = i18n[lang][10];
+            }
+
+            
+
+            gameOverText.setText(i18n[lang][2] +"\n"+ deviceDependentRestartText);
         }
         doPlayerMovement();
         repositionItem();
