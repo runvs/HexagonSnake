@@ -49,6 +49,8 @@ var hexagonTween;
 var playerStartTween;
 var hexagonStartTween;
 
+var tweensFinished = false;
+
 DirectionEnum = {
     NORTH     : 0,
     NORTHEAST : 1,
@@ -147,12 +149,15 @@ function create()
     particleEmitterItemPickup.gravity = 200;
 
 
-    game.hexagonGroup.y = playerGroup.y = window.innerHeight * -window.devicePixelRatio;
+    game.hexagonGroup.y = playerGroup.y = game.height * -window.devicePixelRatio;
 
-    playerTween = game.add.tween(playerGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
-    hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
-    playerStartTween = game.add.tween(playerGroup).to({ y: 0 }, 1000, Phaser.Easing.Cubic.Out, false);
-    hexagonStartTween = game.add.tween(game.hexagonGroup).to({ y: 0 }, 1000, Phaser.Easing.Cubic.Out, false);
+    playerTween = game.add.tween(playerGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
+    hexagonTween = game.add.tween(game.hexagonGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
+    playerStartTween = game.add.tween(playerGroup).to({ y: 0 }, 2000, Phaser.Easing.Bounce.Out, false);
+    hexagonStartTween = game.add.tween(game.hexagonGroup).to({ y: 0 }, 2000, Phaser.Easing.Bounce.Out, false);
+    playerStartTween.onComplete.add(function() {
+        tweensFinished = true;
+    }, this);
 
     playerItemText = game.add.text(10, 15, "0 Points", {
         font: "20px Arial",
@@ -419,7 +424,7 @@ function movePlayer1NorthWest()
 
 function doPlayerMovement()
 {
-	if(game.time.now > movementTimer && !isGameOver)
+	if(game.time.now > movementTimer && !isGameOver && tweensFinished)
 	{
 		movementTimer = game.time.now + config.MOVEMENT_INCREMENT;
 
@@ -466,6 +471,10 @@ function doPlayerMovement()
 
         repositionPlayerSprites();
 	}
+    else if(!tweensFinished)
+    {
+        repositionPlayerSprites();
+    }
 }
 
 function repositionPlayerSprites()
@@ -564,8 +573,8 @@ function resetGame()
     playerTween.stop();
     hexagonTween.stop();
 
-    playerTween = game.add.tween(playerGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
-    hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+    playerTween = game.add.tween(playerGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
+    hexagonTween = game.add.tween(game.hexagonGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
 
     playerGroup.y = 0;
     game.hexagonGroup.y = 0;
