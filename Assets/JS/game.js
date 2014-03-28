@@ -10,7 +10,8 @@ var config =
     MOVEMENT_INCREMENT: 500,
     SCORE_MULTIPLIER: 225,
     PARTICLEFADEOUTTIME: 500,
-    PARTICLENUMBER:15
+    PARTICLENUMBER:15,
+    PARTICLESPEEDRANGE:150
 };
 
 var game;
@@ -138,19 +139,21 @@ function create()
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
-<<<<<<< HEAD
     particleEmitter = game.add.emitter(0, 0, 100);
     particleEmitter.makeParticles('item');  
     
     particleEmitter.alpha = 0.5;
 
     particleEmitter.maxParticleScale= 0.5;
-    particleEmitter.minParticleScale = 0.5;
+    particleEmitter.minParticleScale = 0.25;
+
+    particleEmitter.minParticleSpeed.setTo(-config.PARTICLESPEEDRANGE, -config.PARTICLESPEEDRANGE);
+    particleEmitter.maxParticleSpeed.setTo(config.PARTICLESPEEDRANGE, config.PARTICLESPEEDRANGE);
+
+
 
     particleEmitter.gravity = 200;
 
-
-    playerTween = game.add.tween(player).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
     game.hexagonGroup.y = playerGroup.y = window.innerHeight * -window.devicePixelRatio;
 
     playerTween = game.add.tween(playerGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
@@ -206,7 +209,7 @@ function particleBurst() {
     //  The final parameter (10) is how many particles will be emitted in this single burst
     particleEmitter.start(true, config.PARTICLEFADEOUTTIME, null, config.PARTICLENUMBER);
 
-    var particleAlphaTween = game.add.tween(particleEmitter).to({ alpha: 0 }, config.PARTICLEFADEOUTTIME, Phaser.Easing.Cubic.Out, true);
+    var particleAlphaTween = game.add.tween(particleEmitter).to({ alpha: 0 }, config.PARTICLEFADEOUTTIME, Phaser.Easing.Linear.Out, true);
     particleAlphaTween.onComplete.add(function (){particleEmitter.alpha = 1;} , this);
 
 }
