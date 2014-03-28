@@ -13,7 +13,7 @@ var config =
 
 var game;
 var item;
-var player;
+var playerGroup;
 var playerTrail = [{x: 0, y: 1}, {x: 0, y: 1}];
 
 var TouchInput;
@@ -86,7 +86,7 @@ function create()
 
     game.hexagonGroup = game.add.group();
 
-    player = game.add.group();
+    playerGroup = game.add.group();
 
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(Player1TurnRight, this);
@@ -134,11 +134,11 @@ function create()
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
-    game.hexagonGroup.y = player.y = window.innerHeight * -window.devicePixelRatio;
+    game.hexagonGroup.y = playerGroup.y = window.innerHeight * -window.devicePixelRatio;
 
-    playerTween = game.add.tween(player).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+    playerTween = game.add.tween(playerGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
     hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
-    playerStartTween = game.add.tween(player).to({ y: 0 }, 1000, Phaser.Easing.Cubic.Out, false);
+    playerStartTween = game.add.tween(playerGroup).to({ y: 0 }, 1000, Phaser.Easing.Cubic.Out, false);
     hexagonStartTween = game.add.tween(game.hexagonGroup).to({ y: 0 }, 1000, Phaser.Easing.Cubic.Out, false);
 
     playerItemText = game.add.text(10, 15, "0 Points", {
@@ -439,7 +439,7 @@ function repositionPlayerSprites()
 {
     if(!IsGameOver)
     {
-        player.removeAll();
+        playerGroup.removeAll();
         for(var i = 0; i < playerTrail.length; i++)
         {
             var newCoords = getScreenPosition(playerTrail[i].x, playerTrail[i].y);
@@ -447,7 +447,7 @@ function repositionPlayerSprites()
             p.anchor.x = 0.25;
             p.anchor.y = 0;
             p.alpha = (i == 0 ? 1 : 0.6);
-            player.add(p);
+            playerGroup.add(p);
         }
     }
 }
@@ -530,10 +530,10 @@ function resetGame()
     playerTween.stop();
     hexagonTween.stop();
 
-    playerTween = game.add.tween(player).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
+    playerTween = game.add.tween(playerGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
     hexagonTween = game.add.tween(game.hexagonGroup).to({ y: window.innerHeight * window.devicePixelRatio }, 3200, Phaser.Easing.Cubic.In, false);
 
-    player.y = 0;
+    playerGroup.y = 0;
     game.hexagonGroup.y = 0;
 
     playerTrail =
