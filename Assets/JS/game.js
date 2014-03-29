@@ -713,8 +713,6 @@ function tweetScore()
 window.onload = function ()
 {
     game = new Phaser.Game(
-        //window.innerWidth * window.devicePixelRatio,
-        //window.innerHeight * window.devicePixelRatio,
         480,
         800,
         Phaser.AUTO,
