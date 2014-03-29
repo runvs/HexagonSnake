@@ -51,6 +51,8 @@ var hexagonTween;
 var playerStartTween;
 var hexagonStartTween;
 
+var muteButton, twitterButton;
+
 var tweensFinished = false;
 
 var numberOfDirectionChangesInCurrentMovement = 0;
@@ -66,13 +68,16 @@ DirectionEnum = {
     NORTHWEST : 5
 }
 
-var player1Direction = DirectionEnum.NORTHWEST;
+var player1Direction;
 
 function preload()
 {
 	game.load.image('player', 'Assets/GFX/Player.png');
     game.load.image('tile', 'Assets/GFX/tile.png');
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
+
+    game.load.image('twitter', 'Assets/GFX/twitter.png');
+    game.load.image('mute', 'Assets/GFX/mute.png');
 
     game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
     game.load.audio('pickup', ['Assets/Audio/pickup.ogg', 'Assets/Audio/pickup.mp3']);
@@ -81,6 +86,11 @@ function preload()
 
 function create()
 {
+    if(typeof(i18n[lang]) == 'undefined')
+    {
+        lang = 'en';
+    }
+
     game.stage.scaleMode = Phaser.StageScaleMode.SHOW_ALL;
     game.stage.scale.setShowAll();
     game.stage.scale.refresh();
@@ -140,7 +150,7 @@ function create()
     playerTrail[0].y = 2;
     playerTrail[1].x = 1;
     playerTrail[1].y = 1;
-    player1Direction = DirectionEnum.SOUTHEAST;
+    player1Direction = DirectionEnum.SOUTH;
 
     music = game.add.audio('music');
     music.play('', 0, 1, true);
@@ -169,6 +179,12 @@ function create()
 
     createText();
 
+    muteButton = game.add.button(game.width, 0, 'mute', musicMutechange);
+    muteButton.anchor.setTo(1, 0);
+    muteButton.visible = false;
+    twitterButton = game.add.button(game.width, 0, 'twitter', tweetScore);
+    twitterButton.anchor.setTo(1.9, -0.7);
+    twitterButton.visible = false;
 
     
 }
@@ -259,7 +275,6 @@ function createText()
         });
         menuTextTutorial2.anchor.setTo(1,0.5);
     }
-
 }
 
 function particleBurstItemPickup() 
@@ -290,6 +305,8 @@ function switchToGameOver()
     failSound.play("", 0, 0.125);
     playerTween.start();
     hexagonTween.start();
+
+    twitterButton.visible = true;
 }
 
 function switchIntoGame()
@@ -319,6 +336,8 @@ function switchIntoGame()
         getNewRandomItemPosition();
         game.hexagonGroup.add(item);
         isInMenu = false;
+
+        muteButton.visible = true;
     }
     else
     {
@@ -341,9 +360,14 @@ function doTouchInput(pointer)
         {
             player1TurnRight();
         }
+
         if(isGameOver)
         {
-            resetGame();
+            if(!(pointer.x > game.width - 2 * twitterButton.width && pointer.x < game.width
+                && pointer.y < twitterButton.height + twitterButton.height * -twitterButton.anchor.y))
+            {
+                resetGame();
+            }
         }
     }
     else
@@ -664,6 +688,8 @@ function resetGame()
     playerTween.stop();
     hexagonTween.stop();
 
+    twitterButton.visible = false;
+
     playerTween = game.add.tween(playerGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
     hexagonTween = game.add.tween(game.hexagonGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
 
@@ -698,8 +724,6 @@ function tweetScore()
 window.onload = function ()
 {
     game = new Phaser.Game(
-        //window.innerWidth * window.devicePixelRatio,
-        //window.innerHeight * window.devicePixelRatio,
         480,
         800,
         Phaser.AUTO,
