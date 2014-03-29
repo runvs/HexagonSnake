@@ -52,6 +52,7 @@ var playerStartTween;
 var hexagonStartTween;
 
 var muteButton, twitterButton;
+var particleEmitterMuteButton;
 
 var tweensFinished = false;
 
@@ -79,9 +80,11 @@ function preload()
     game.load.image('twitter', 'Assets/GFX/twitter.png');
     game.load.image('mute', 'Assets/GFX/mute.png');
 
-    game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
     game.load.audio('pickup', ['Assets/Audio/pickup.ogg', 'Assets/Audio/pickup.mp3']);
     game.load.audio('fail', ['Assets/Audio/fail.ogg', 'Assets/Audio/fail.mp3']);
+    game.load.audio('turn', ['Assets/Audio/turn.ogg', 'Assets/Audio/turn.mp3']);
+    game.load.audio('move', ['Assets/Audio/move.ogg', 'Assets/Audio/move.mp3']);
+    game.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
 }
 
 function create()
@@ -155,6 +158,14 @@ function create()
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
+    muteButton = game.add.button(game.width, 0, 'mute', musicMutechange);
+    muteButton.anchor.setTo(1, 0);
+    muteButton.visible = false;
+    twitterButton = game.add.button(game.width, 0, 'twitter', tweetScore);
+    twitterButton.anchor.setTo(1.9, -0.7);
+    twitterButton.visible = false;
+
+
     particleEmitterItemPickup = game.add.emitter(0, 0, 100);
     particleEmitterItemPickup.makeParticles('item');  
     particleEmitterItemPickup.alpha = 1;
@@ -163,6 +174,15 @@ function create()
     particleEmitterItemPickup.minParticleSpeed.setTo(-config.PARTICLESPEEDRANGE, -config.PARTICLESPEEDRANGE);
     particleEmitterItemPickup.maxParticleSpeed.setTo(config.PARTICLESPEEDRANGE, config.PARTICLESPEEDRANGE);
     particleEmitterItemPickup.gravity = 200;
+
+    particleEmitterMuteButton = game.add.emitter(0, 0, 100);
+    particleEmitterMuteButton.makeParticles('tile');  
+    particleEmitterMuteButton.alpha = 1;
+    particleEmitterMuteButton.maxParticleScale= 0.5;
+    particleEmitterMuteButton.minParticleScale = 0.25;
+    particleEmitterMuteButton.minParticleSpeed.setTo(-config.PARTICLESPEEDRANGE, -config.PARTICLESPEEDRANGE);
+    particleEmitterMuteButton.maxParticleSpeed.setTo(config.PARTICLESPEEDRANGE, config.PARTICLESPEEDRANGE);
+    particleEmitterMuteButton.gravity = 200;
 
 
     game.hexagonGroup.y = playerGroup.y = game.height * -window.devicePixelRatio;
@@ -179,12 +199,7 @@ function create()
 
     createText();
 
-    muteButton = game.add.button(game.width, 0, 'mute', musicMutechange);
-    muteButton.anchor.setTo(1, 0);
-    muteButton.visible = false;
-    twitterButton = game.add.button(game.width, 0, 'twitter', tweetScore);
-    twitterButton.anchor.setTo(1.9, -0.7);
-    twitterButton.visible = false;
+
 
     
 }
@@ -279,7 +294,6 @@ function createText()
 
 function particleBurstItemPickup() 
 {
-
     //  Position the emitter where the mouse/touch event was
     var pos =  getScreenPosition(playerTrail[0].x, playerTrail[0].y);
     particleEmitterItemPickup.x = pos.x + hexagonParameters.h;
@@ -293,6 +307,40 @@ function particleBurstItemPickup()
 
     var particleAlphaTween = game.add.tween(particleEmitterItemPickup).to({ alpha: 0 }, config.PARTICLEFADEOUTTIME, Phaser.Easing.Linear.Out, true);
     particleAlphaTween.onComplete.add(function (){particleEmitterItemPickup.alpha = 1;} , this);
+}
+
+function particleBurstMuteButton() 
+{
+    //  Position the emitter where the mouse/touch event was
+    particleEmitterMuteButton.alpha = 1;
+    particleEmitterMuteButton.x = muteButton.x - 0.5 * muteButton.width ;
+    particleEmitterMuteButton.y = muteButton.y + 0.5 * muteButton.height;
+
+    //  The first parameter sets the effect to "explode" which means all particles are emitted at once
+    //  The second gives each particle a 2000ms lifespan
+    //  The third is ignored when using burst/explode mode
+    //  The final parameter (10) is how many particles will be emitted in this single burst
+    particleEmitterMuteButton.start(true, config.PARTICLEFADEOUTTIME, null, config.PARTICLENUMBER);
+
+    var particleAlphaTween = game.add.tween(particleEmitterMuteButton).to({ alpha: 0 }, config.PARTICLEFADEOUTTIME, Phaser.Easing.Cubic.Out, true);
+    particleAlphaTween.onComplete.add(function (){particleEmitterMuteButton.alpha = 0;} , this);
+}
+
+function particleBurstTwitterButton() 
+{
+    //  Position the emitter where the mouse/touch event was
+    particleEmitterMuteButton.alpha = 1;
+    particleEmitterMuteButton.x = twitterButton.x - 0.5 * twitterButton.width ;
+    particleEmitterMuteButton.y = twitterButton.y + 0.5 * twitterButton.height;
+
+    //  The first parameter sets the effect to "explode" which means all particles are emitted at once
+    //  The second gives each particle a 2000ms lifespan
+    //  The third is ignored when using burst/explode mode
+    //  The final parameter (10) is how many particles will be emitted in this single burst
+    particleEmitterMuteButton.start(true, config.PARTICLEFADEOUTTIME, null, config.PARTICLENUMBER);
+
+    var particleAlphaTween = game.add.tween(particleEmitterMuteButton).to({ alpha: 0 }, config.PARTICLEFADEOUTTIME, Phaser.Easing.Cubic.Out, true);
+    particleAlphaTween.onComplete.add(function (){particleEmitterMuteButton.alpha = 0;} , this);
 }
 
 
@@ -383,12 +431,16 @@ function player1TurnRight()
     {
         if(numberOfDirectionChangesInCurrentMovement < 2)
         {
+            
             player1Direction++;
             if(player1Direction > DirectionEnum.NORTHWEST )
             {
                 player1Direction = DirectionEnum.NORTH;
             }
             numberOfDirectionChangesInCurrentMovement++;
+
+            var turnSound = game.add.audio('turn');
+            turnSound.play("", 0, 0.35);
         }
     }
 }
@@ -399,12 +451,16 @@ function player1TurnLeft()
     {
         if(numberOfDirectionChangesInCurrentMovement > -2)
         {
+
             player1Direction--;
             if(player1Direction < DirectionEnum.NORTH)
             {
                 player1Direction = DirectionEnum.NORTHWEST;
             }
             numberOfDirectionChangesInCurrentMovement--;
+
+            var turnSound = game.add.audio('turn');
+            turnSound.play("", 0, 0.35);
         }
     }
 }
@@ -531,6 +587,9 @@ function doPlayerMovement()
 		movementTimer = game.time.now + config.MOVEMENT_INCREMENT;
         numberOfDirectionChangesInCurrentMovement = 0;
 
+        //var moveSound = game.add.audio('move');
+        //moveSound.play("", 0, 0.35);
+
         for(var i = playerTrail.length - 1; i >= 1; i--)
         {
             playerTrail[i].x = playerTrail[i - 1].x;
@@ -620,7 +679,10 @@ function getNewRandomItemPosition()
 
 function musicMutechange()
 {
+    var clickSound = game.add.audio('turn');
+    clickSound.play("", 0, 0.35);
     game.sound.mute = !game.sound.mute;
+    particleBurstMuteButton();
 }
 
 function getScreenPosition (tileX, tileY)
@@ -717,6 +779,7 @@ function tweetScore()
 {
     if(isGameOver)
     {
+        particleBurstTwitterButton();
         window.open('https://twitter.com/intent/tweet?url=http://j.mp/1oHrlCm&text=I%27ve%20just%20reached%20$score$%20on%20%23HexagonSnake'.replace('$score$', config.SCORE_MULTIPLIER * playerItemCounter + ' Points'));
     }
 }
