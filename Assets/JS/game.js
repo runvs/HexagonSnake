@@ -53,6 +53,8 @@ var hexagonStartTween;
 
 var tweensFinished = false;
 
+var numberOfDirectionChangesInCurrentMovement = 0;
+
 var lang = navigator.language.substr(0, 2);
 
 DirectionEnum = {
@@ -355,10 +357,14 @@ function player1TurnRight()
 {
     if(!isGameOver)
     {
-        player1Direction++;
-        if(player1Direction > DirectionEnum.NORTHWEST )
+        if(numberOfDirectionChangesInCurrentMovement < 2)
         {
-            player1Direction = DirectionEnum.NORTH;
+            player1Direction++;
+            if(player1Direction > DirectionEnum.NORTHWEST )
+            {
+                player1Direction = DirectionEnum.NORTH;
+            }
+            numberOfDirectionChangesInCurrentMovement++;
         }
     }
 }
@@ -367,10 +373,14 @@ function player1TurnLeft()
 {
     if(!isGameOver)
     {
-        player1Direction--;
-        if(player1Direction < DirectionEnum.NORTH)
+        if(numberOfDirectionChangesInCurrentMovement > -2)
         {
-            player1Direction = DirectionEnum.NORTHWEST;
+            player1Direction--;
+            if(player1Direction < DirectionEnum.NORTH)
+            {
+                player1Direction = DirectionEnum.NORTHWEST;
+            }
+            numberOfDirectionChangesInCurrentMovement--;
         }
     }
 }
@@ -495,6 +505,7 @@ function doPlayerMovement()
 	if(game.time.now > movementTimer && !isGameOver && tweensFinished)
 	{
 		movementTimer = game.time.now + config.MOVEMENT_INCREMENT;
+        numberOfDirectionChangesInCurrentMovement = 0;
 
         for(var i = playerTrail.length - 1; i >= 1; i--)
         {
