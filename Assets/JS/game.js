@@ -84,6 +84,11 @@ function preload()
 
 function create()
 {
+    if(typeof(i18n[lang]) == 'undefined')
+    {
+        lang = 'en';
+    }
+
     game.stage.scaleMode = Phaser.StageScaleMode.SHOW_ALL;
     game.stage.scale.setShowAll();
     game.stage.scale.refresh();
