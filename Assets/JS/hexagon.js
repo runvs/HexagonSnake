@@ -17,6 +17,8 @@ function Hexagon(x, y, game, p, spriteName)
     this.graphics = game.add.sprite(offX, offY, spriteName);
     game.hexagonGroup.add(this.graphics);
 
+    this.graphics.animations.add('ani');
+
     var tween = game.add.tween(this.graphics).to({ alpha: 0.5 }, 500, null, true, x * 50 * (Math.random() * 0.8 + 1), true, true);
     tween.onComplete.add(onComplete, this);
 

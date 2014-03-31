@@ -77,7 +77,7 @@ var player1Direction;
 function preload()
 {
 	game.load.spritesheet('player', 'Assets/GFX/Player.png', 51,45);
-    game.load.image('tile', 'Assets/GFX/tile.png');
+    game.load.spritesheet('tile', 'Assets/GFX/tile.png', 51, 45);
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
 
     game.load.image('twitter', 'Assets/GFX/twitter.png');
@@ -714,6 +714,30 @@ function getScreenPosition (tileX, tileY)
     return pos;
 }
 
+function flashHexagons(x, y)
+{
+    // Flash the 6 hexagons around a certain position
+    for(var i = 0; i < hexagons.length; i++)
+    {
+        var offset = 0;
+
+        if(x % 2 == 0)
+        {
+            offset--;
+        }
+
+        if(    (hexagons[i].x == x - 1 && hexagons[i].y == y     + offset)  // Top left
+            || (hexagons[i].x == x - 1 && hexagons[i].y == y + 1 + offset)  // Bottom left
+            || (hexagons[i].x == x     && hexagons[i].y == y + 1         )  // Bottom
+            || (hexagons[i].x == x + 1 && hexagons[i].y == y + 1 + offset)  // Bottom right
+            || (hexagons[i].x == x + 1 && hexagons[i].y == y     + offset)  // Top right
+            || (hexagons[i].x == x     && hexagons[i].y == y - 1         )) // Top
+        {
+            hexagons[i].graphics.animations.play('ani', 12, false);
+        }
+    }
+}
+
 function update()
 {
     if(!isInMenu)
@@ -721,6 +745,8 @@ function update()
         // Is the snake head on an item?
         if(playerTrail[0].x == itemPosition.x && playerTrail[0].y == itemPosition.y)
         {
+            flashHexagons(itemPosition.x, itemPosition.y);
+
             playerTrail.push({ x: itemPosition.x, y: itemPosition.y });
             playerItemCounter++;
             getNewRandomItemPosition();
