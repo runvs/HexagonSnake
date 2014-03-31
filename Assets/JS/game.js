@@ -15,7 +15,7 @@ var config =
     PARTICLEFADEOUTTIME: 500,
     PARTICLENUMBER:15,
     PARTICLESPEEDRANGE:150,
-    TRAIL_ALPHA: 0.7
+    TRAIL_ALPHA: 0.85
 };
 
 var game;
@@ -62,6 +62,8 @@ var tweensFinished = false;
 
 var numberOfDirectionChangesInCurrentMovement = 0;
 
+var tutorialSprite;
+
 var lang = navigator.language.substr(0, 2);
 
 DirectionEnum = {
@@ -84,6 +86,7 @@ function preload()
     game.load.image('playerheadNW', 'Assets/GFX/PlayerNW.png');
     game.load.image('playerheadSW', 'Assets/GFX/PlayerSW.png');
     game.load.image('playerheadS', 'Assets/GFX/PlayerS.png');
+    game.load.image('tut', 'Assets/GFX/tut.png');
 
     game.load.image('tile', 'Assets/GFX/tile.png');
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
@@ -209,6 +212,11 @@ function create()
   
 
     createText();
+
+    tutorialSprite = game.add.sprite(game.width/2, game.height/2, 'tut');
+    tutorialSprite.anchor.x=0.5;
+    tutorialSprite.anchor.y=0.5;
+
     repositionPlayerSprites();
 
 
@@ -237,12 +245,12 @@ function createText()
     gameOverText.anchor.setTo(0.5, 0.5);
 
 
-    menuTextGameName = game.add.text(textLeftMargin, textTopMargin, i18n[lang][0], {
+    menuTextGameName = game.add.text(game.width/2, textTopMargin, i18n[lang][0], {
         font: "45px Arial",
         fill: " #ff8860",
         align: "left"
     });
-    menuTextGameName.anchor.setTo(0,0.5);
+    menuTextGameName.anchor.setTo(0.5,0.5);
 
     menuTextCredits = game.add.text(textLeftMargin, game.height - textTopMargin, i18n[lang][11], {
         font: "15px Arial",
@@ -255,23 +263,23 @@ function createText()
     // plattform dependent text
     if (game.device.desktop)
     {
-        menuTextInfo = game.add.text(textLeftMargin, 65, i18n[lang][3], {
+        menuTextInfo = game.add.text(game.width/2, 65, i18n[lang][3], {
             font: "25px Arial",
             fill: " #ff8860",
             align: 'left'
         });
-        menuTextInfo.anchor.setTo(0,0.5);
+        menuTextInfo.anchor.setTo(0.5,0.5);
 
         menuTextTutorial1 = game.add.text(textLeftMargin, game.height/2 - 25, i18n[lang][5], {
             font: "25px Arial",
-            fill: " #ff8860",
+            fill: " #7799ff",
             align: 'left'
         });
         menuTextTutorial1.anchor.setTo(0,0.5);
 
         menuTextTutorial2 = game.add.text(game.width - textLeftMargin, game.height/2 + 25, i18n[lang][7], {
             font: "25px Arial",
-            fill: " #ff8860",
+            fill: " #7799ff",
             align: 'left'
         });
         menuTextTutorial2.anchor.setTo(1,0.5);
@@ -280,23 +288,23 @@ function createText()
     }
     else    // on mobile devices
     {
-        menuTextInfo = game.add.text(textLeftMargin, 65, i18n[lang][4], {
+        menuTextInfo = game.add.text(game.width/2, 65, i18n[lang][4], {
             font: "25px Arial",
             fill: " #ff8860",
             align: 'left'
         });
-        menuTextInfo.anchor.setTo(0,0.5);
+        menuTextInfo.anchor.setTo(0.5,0.5);
 
         menuTextTutorial1 = game.add.text(textLeftMargin, game.height/2 - 25,  i18n[lang][6], {
             font: "25px Arial",
-            fill: " #ff8860",
+            fill: " #7799ff",
             align: 'left'
         });
         menuTextTutorial1.anchor.setTo(0,0.5);
 
         menuTextTutorial2 = game.add.text(game.width - textLeftMargin, game.height/2 + 25, i18n[lang][8], {
             font: "25px Arial",
-            fill: " #ff8860",
+            fill: " #7799ff",
             align: 'left'
         });
         menuTextTutorial2.anchor.setTo(1,0.5);
@@ -378,6 +386,7 @@ function switchIntoGame()
         menuTextCredits.setText("");
         menuTextTutorial1.setText("");
         menuTextTutorial2.setText("");
+        tutorialSprite.visible = false;
 
         for (var i = 0; i < config.WORLD_SIZE.x + 1; i++) 
         {
