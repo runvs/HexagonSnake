@@ -174,7 +174,7 @@ function create()
 
     muteButton = game.add.button(game.width, 0, 'mute', musicMutechange);
     muteButton.anchor.setTo(1, 0);
-    muteButton.visible = false;
+    muteButton.visible = true;
     twitterButton = game.add.button(game.width, 0, 'twitter', tweetScore);
     twitterButton.anchor.setTo(1.9, -0.7);
     twitterButton.visible = false;
