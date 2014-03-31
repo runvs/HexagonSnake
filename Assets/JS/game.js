@@ -773,9 +773,10 @@ function flashHexagons(x, y)
             || (hexagons[i].x == x     && hexagons[i].y == y + 1         )  // Bottom
             || (hexagons[i].x == x + 1 && hexagons[i].y == y + 1 + offset)  // Bottom right
             || (hexagons[i].x == x + 1 && hexagons[i].y == y     + offset)  // Top right
-            || (hexagons[i].x == x     && hexagons[i].y == y - 1         )) // Top
+            || (hexagons[i].x == x     && hexagons[i].y == y - 1         )  // Top
+            || (hexagons[i].x == x     && hexagons[i].y == y             )) // Middle
         {
-            hexagons[i].graphics.animations.play('ani', 12, false);
+            hexagons[i].graphics.animations.play('ani', 18, false);
         }
     }
 }
