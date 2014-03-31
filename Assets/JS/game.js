@@ -14,7 +14,8 @@ var config =
     SCORE_MULTIPLIER: 225,
     PARTICLEFADEOUTTIME: 500,
     PARTICLENUMBER:15,
-    PARTICLESPEEDRANGE:150
+    PARTICLESPEEDRANGE:150,
+    TRAIL_ALPHA: 0.7
 };
 
 var game;
@@ -76,7 +77,14 @@ var player1Direction;
 
 function preload()
 {
-	game.load.spritesheet('player', 'Assets/GFX/Player.png', 51,45);
+	game.load.image('player', 'Assets/GFX/PlayerTrail.png');
+    game.load.image('playerheadN', 'Assets/GFX/PlayerN.png');
+    game.load.image('playerheadNE', 'Assets/GFX/PlayerNE.png');
+    game.load.image('playerheadSE', 'Assets/GFX/PlayerSE.png');
+    game.load.image('playerheadNW', 'Assets/GFX/PlayerNW.png');
+    game.load.image('playerheadSW', 'Assets/GFX/PlayerSW.png');
+    game.load.image('playerheadS', 'Assets/GFX/PlayerS.png');
+
     game.load.image('tile', 'Assets/GFX/tile.png');
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
 
@@ -638,7 +646,7 @@ function doPlayerMovement()
 	}
     else if(!tweensFinished)
     {
-        //repositionPlayerSprites();
+        repositionPlayerSprites();
     }
 }
 
@@ -651,18 +659,38 @@ function repositionPlayerSprites()
         // FIXME: Do not remove all but only the last one
         //playerGroup.sort('spriteIndexAsInTrail');
 
-
-
         for(var i = 0; i < playerTrail.length; i++)
         {
             var newCoords = getScreenPosition(playerTrail[i].x, playerTrail[i].y);
-            var p = game.add.sprite(newCoords.x, newCoords.y, 'player');
-            //p.spriteIndexAsInTrail = i;
-            p.animations.add('ani2');
-            p.animations.play('ani2', 6, true);
+            var orientationName = "";
+            if(player1Direction == DirectionEnum.NORTH)
+            {
+                orientationName = "playerheadN";
+            }
+            else if(player1Direction == DirectionEnum.SOUTH)
+            {
+                orientationName = "playerheadS";
+            }
+            else if(player1Direction == DirectionEnum.NORTHWEST)
+            {
+                orientationName = "playerheadNW";
+            }
+            else if(player1Direction == DirectionEnum.NORTHEAST)
+            {
+                orientationName = "playerheadNE";
+            }
+            else if(player1Direction == DirectionEnum.SOUTHEAST)
+            {
+                orientationName = "playerheadSE";
+            }
+            else if(player1Direction == DirectionEnum.SOUTHWEST)
+            {
+                orientationName = "playerheadSW";
+            }
+            var p = game.add.sprite(newCoords.x, newCoords.y, (i == 0 ? orientationName : 'player'));
             p.anchor.x = 0.25;
             p.anchor.y = 0;
-            p.alpha = (i == 0 ? 1 : 0.7);
+            p.alpha = (i == 0 ? 1 : config.TRAIL_ALPHA);
             playerGroup.add(p);
         }
     }
