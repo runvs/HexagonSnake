@@ -23,7 +23,7 @@ function Hexagon(x, y, game, p, spriteName)
     tween.onComplete.add(onComplete, this);
 
     function onComplete() {
-        tween = game.add.tween(this.graphics).to({ alpha: 0.8 }, 500, null, true, y * 50 * (Math.random() * 0.8 + 1), true, true);
+        tween = game.add.tween(this.graphics).to({ alpha: 0.7 }, 500, null, true, y * 50 * (Math.random() * 0.8 + 1), true, true);
         tween.onComplete.add(onComplete, this);
     };
 }
