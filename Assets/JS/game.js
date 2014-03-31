@@ -464,6 +464,7 @@ function player1TurnRight()
 
             var turnSound = game.add.audio('turn');
             turnSound.play("", 0, 0.4);
+            repositionPlayerSprites();
         }
     }
 }
@@ -484,6 +485,7 @@ function player1TurnLeft()
 
             var turnSound = game.add.audio('turn');
             turnSound.play("", 0, 0.4);
+            repositionPlayerSprites();
         }
     }
 }
