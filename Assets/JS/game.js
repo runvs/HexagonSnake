@@ -420,13 +420,16 @@ function doTouchInput(pointer)
 {
     if(!isInMenu)
     {
-        if( pointer.x < game.width/2)
+        if(pointer.y > 60)
         {
-            player1TurnLeft();
-        }
-        else
-        {
-            player1TurnRight();
+            if( pointer.x < game.width/2)
+            {
+                player1TurnLeft();
+            }
+            else
+            {
+                player1TurnRight();
+            }
         }
 
         if(isGameOver)
