@@ -7,7 +7,10 @@ var config =
         y: 10
     },
     INPUT_INCREMENT: 50,
-    MOVEMENT_INCREMENT: 500,
+    MOVEMENT_INCREMENT_CURRENT: 800,
+    MOVEMENT_INCREMENT_START: 800,
+    MOVEMENT_INCREMENT_DELTA: 13,
+    MOVEMENT_INCREMENT_MIN: 70, 
     SCORE_MULTIPLIER: 225,
     PARTICLEFADEOUTTIME: 500,
     PARTICLENUMBER:15,
@@ -73,7 +76,7 @@ var player1Direction;
 
 function preload()
 {
-	game.load.image('player', 'Assets/GFX/Player.png');
+	game.load.spritesheet('player', 'Assets/GFX/Player.png', 51,45);
     game.load.image('tile', 'Assets/GFX/tile.png');
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
 
@@ -149,9 +152,9 @@ function create()
 
     inputTimer = 0;
 
-    playerTrail[0].x = 2;
+    playerTrail[0].x = 4;
     playerTrail[0].y = 2;
-    playerTrail[1].x = 1;
+    playerTrail[1].x = 4;
     playerTrail[1].y = 1;
     player1Direction = DirectionEnum.SOUTH;
 
@@ -198,7 +201,7 @@ function create()
   
 
     createText();
-
+    repositionPlayerSprites();
 
 
     
@@ -440,7 +443,7 @@ function player1TurnRight()
             numberOfDirectionChangesInCurrentMovement++;
 
             var turnSound = game.add.audio('turn');
-            turnSound.play("", 0, 0.35);
+            turnSound.play("", 0, 0.4);
         }
     }
 }
@@ -460,7 +463,7 @@ function player1TurnLeft()
             numberOfDirectionChangesInCurrentMovement--;
 
             var turnSound = game.add.audio('turn');
-            turnSound.play("", 0, 0.35);
+            turnSound.play("", 0, 0.4);
         }
     }
 }
@@ -584,7 +587,7 @@ function doPlayerMovement()
 {
 	if(game.time.now > movementTimer && !isGameOver && tweensFinished)
 	{
-		movementTimer = game.time.now + config.MOVEMENT_INCREMENT;
+		movementTimer = game.time.now + config.MOVEMENT_INCREMENT_CURRENT;
         numberOfDirectionChangesInCurrentMovement = 0;
 
         //var moveSound = game.add.audio('move');
@@ -635,7 +638,7 @@ function doPlayerMovement()
 	}
     else if(!tweensFinished)
     {
-        repositionPlayerSprites();
+        //repositionPlayerSprites();
     }
 }
 
@@ -644,13 +647,22 @@ function repositionPlayerSprites()
     if(!isGameOver)
     {
         playerGroup.removeAll();
+
+        // FIXME: Do not remove all but only the last one
+        //playerGroup.sort('spriteIndexAsInTrail');
+
+
+
         for(var i = 0; i < playerTrail.length; i++)
         {
             var newCoords = getScreenPosition(playerTrail[i].x, playerTrail[i].y);
             var p = game.add.sprite(newCoords.x, newCoords.y, 'player');
+            //p.spriteIndexAsInTrail = i;
+            p.animations.add('ani2');
+            p.animations.play('ani2', 6, true);
             p.anchor.x = 0.25;
             p.anchor.y = 0;
-            p.alpha = (i == 0 ? 1 : 0.6);
+            p.alpha = (i == 0 ? 1 : 0.7);
             playerGroup.add(p);
         }
     }
@@ -714,10 +726,10 @@ function update()
             getNewRandomItemPosition();
             playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' ' + i18n[lang][1]);
 
-            config.MOVEMENT_INCREMENT = 500 - (6 * playerItemCounter);
-            if(config.MOVEMENT_INCREMENT <= 100)
+            config.MOVEMENT_INCREMENT_CURRENT = config.MOVEMENT_INCREMENT_START - (config.MOVEMENT_INCREMENT_DELTA * playerItemCounter);
+            if(config.MOVEMENT_INCREMENT_CURRENT <= config.MOVEMENT_INCREMENT_MIN)
             {
-                config.MOVEMENT_INCREMENT = 100;
+                config.MOVEMENT_INCREMENT_CURRENT = config.MOVEMENT_INCREMENT_MIN;
             }
             var pickupSound = game.add.audio('pickup');
             pickupSound.play("", 0, 0.25);
@@ -764,7 +776,7 @@ function resetGame()
         { x: 1, y: 1}
     ];
     playerItemCounter = 0;
-    config.MOVEMENT_INCREMENT = 500;
+    config.MOVEMENT_INCREMENT_CURRENT = config.MOVEMENT_INCREMENT_START;
     playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' Points');
 
     isGameOver = false;
