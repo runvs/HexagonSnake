@@ -450,7 +450,7 @@ function doTouchInput(pointer)
 
 function player1TurnRight()
 {
-    if(!isGameOver)
+    if(!isGameOver && !isInMenu)
     {
         if(numberOfDirectionChangesInCurrentMovement < 2)
         {
@@ -471,7 +471,7 @@ function player1TurnRight()
 
 function player1TurnLeft()
 {
-    if(!isGameOver)
+    if(!isGameOver && !isInMenu)
     {
         if(numberOfDirectionChangesInCurrentMovement > -2)
         {
