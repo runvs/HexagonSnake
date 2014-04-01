@@ -92,7 +92,7 @@ function preload()
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
 
     game.load.image('twitter', 'Assets/GFX/twitter.png');
-    game.load.image('mute', 'Assets/GFX/mute.png');
+    game.load.spritesheet('mute', 'Assets/GFX/mute.png', 51, 44);
 
     game.load.audio('pickup', ['Assets/Audio/pickup.ogg', 'Assets/Audio/pickup.mp3']);
     game.load.audio('fail', ['Assets/Audio/fail.ogg', 'Assets/Audio/fail.mp3']);
@@ -172,7 +172,7 @@ function create()
     music = game.add.audio('music');
     music.play('', 0, 1, true);
 
-    muteButton = game.add.button(game.width, 0, 'mute', musicMutechange);
+    muteButton = game.add.button(game.width, 0, 'mute', musicMutechange, this, 1,0,0);
     muteButton.anchor.setTo(1, 0);
     muteButton.visible = true;
     twitterButton = game.add.button(game.width, 0, 'twitter', tweetScore);
@@ -737,6 +737,16 @@ function musicMutechange()
     clickSound.play("", 0, 0.35);
     game.sound.mute = !game.sound.mute;
     particleBurstMuteButton();
+    if(game.sound.mute)
+    {
+        muteButton.setFrames(0,1,1)   
+    }
+    else
+    {
+        
+        muteButton.setFrames(1,0,0) 
+    }
+    
 }
 
 function getScreenPosition (tileX, tileY)
