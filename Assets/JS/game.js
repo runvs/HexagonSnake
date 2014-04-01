@@ -175,8 +175,8 @@ function create()
     muteButton = game.add.button(game.width, 0, 'mute', musicMutechange, this, 1,0,0);
     muteButton.anchor.setTo(1, 0);
     muteButton.visible = true;
-    twitterButton = game.add.button(game.width, 0, 'twitter', tweetScore);
-    twitterButton.anchor.setTo(1.9, -0.7);
+    twitterButton = game.add.button(game.width/2, game.height/2+ 45 *2, 'twitter', tweetScore);
+    twitterButton.anchor.setTo(0.5, 0.5);
     twitterButton.visible = false;
 
 
@@ -226,9 +226,9 @@ function create()
 
 function createText()
 {
-      var textLeftMargin = game.width/20;
+    var textLeftMargin = game.width/20;
     var textTopMargin = game.width/20;
-     playerItemText = game.add.text(textLeftMargin, textTopMargin, "0 " + i18n[lang][1] , {
+    playerItemText = game.add.text(textLeftMargin, textTopMargin, "0 " + i18n[lang][1] , {
         font: "20px Arial",
         fill: " #6088ff",
         align: "left"
@@ -373,6 +373,10 @@ function switchToGameOver()
     playerTween.start();
     hexagonTween.start();
 
+    playerItemText.x = game.width/2;
+    playerItemText.y = game.height/2 + 45;
+    playerItemText.anchor.x = 0.5;
+
     twitterButton.visible = true;
 }
 
@@ -434,10 +438,12 @@ function doTouchInput(pointer)
 
         if(isGameOver)
         {
-            if(!(pointer.x > game.width - 2 * twitterButton.width && pointer.x < game.width
-                && pointer.y < twitterButton.height + twitterButton.height * -twitterButton.anchor.y))
+            if(pointer.x < twitterButton.x - twitterButton.width*2 || pointer.x > twitterButton.x + twitterButton.width*2  )
             {
-                resetGame();
+                if(pointer.y < twitterButton.y - twitterButton.width*2 ||pointer.y > twitterButton.y + twitterButton.width*2)
+                {
+                    resetGame();
+                }
             }
         }
     }
@@ -842,6 +848,10 @@ function resetGame()
     hexagonTween.stop();
 
     twitterButton.visible = false;
+
+    playerItemText.x = game.width/20;
+    playerItemText.y = game.height/20;
+    playerItemText.anchor.x = 0;
 
     playerTween = game.add.tween(playerGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
     hexagonTween = game.add.tween(game.hexagonGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
