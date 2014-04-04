@@ -33,10 +33,12 @@ var movementTimer = 0;
 var hexagonParameters = {};
 var hexagons = [];
 
-var DisabledHexagonsList = [];
-var DisabledHexagonCount;
-var DisabledHexagonGroup;
+var disabledHexagonsList = [];
+var disabledHexagonCount;
+var disabledHexagonGroup;
 
+var currentLevel;
+var remainingHexagonsForThisLevel;
 
 var itemPosition = {x : 0, y : 1};
 
@@ -51,6 +53,7 @@ var menuTextInfo;
 var menuTextTutorial1;
 var menuTextTutorial2;
 var menuTextCredits;
+var remainingHexagonText;
 
 var isGameOver;
 var gameOverText;
@@ -131,7 +134,7 @@ function create()
 
     game.hexagonGroup = game.add.group();
     playerGroup = game.add.group();
-    DisabledHexagonGroup = game.add.group();
+    disabledHexagonGroup = game.add.group();
 
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(player1TurnRight, this);
@@ -226,7 +229,9 @@ function create()
 
     repositionPlayerSprites();
 
-    DisabledHexagonCount = 2;
+    disabledHexagonCount = 2;
+    currentLevel = 0;
+    remainingHexagonsForThisLevel = 5;
 
     getNewRandomDisabledHexagons();
 }
@@ -243,6 +248,14 @@ function createText()
     });
     playerItemText.anchor.setTo(0, 0.5);
     playerItemText.setText("");
+
+    remainingHexagonText = game.add.text(game.width - textLeftMargin, textTopMargin, "" + remainingHexagonsForThisLevel + " " + i18n[lang][12] , {
+        font: "20px Arial",
+        fill: " #6088ff",
+        align: "right"
+    });
+    remainingHexagonText.anchor.setTo(2, 0.5);
+    remainingHexagonText.setText("");
 
     gameOverText = game.add.text(game.width / 2, game.height / 2, i18n[lang][2], {
         font: "25px Arial",
@@ -393,6 +406,7 @@ function switchIntoGame()
     if(isInMenu)
     {
         playerItemText.setText("0 " + i18n[lang][1]);
+        remainingHexagonText.setText("" + remainingHexagonsForThisLevel + " " + i18n[lang][12]);
         menuTextGameName.setText("");
         menuTextInfo.setText("");
         menuTextCredits.setText("");
@@ -426,6 +440,17 @@ function switchIntoGame()
             resetGame();
         }
     }
+}
+
+function switchIntoBetweenLevelScreen()
+{
+    // FIXME Tween and Juice
+
+    currentLevel++;
+    disabledHexagonCount += 3;
+    remainingHexagonsForThisLevel = 5 + currentLevel * 2;
+    getNewRandomDisabledHexagons();
+    resetGame();
 }
 
 function doTouchInput(pointer)
@@ -669,9 +694,9 @@ function doPlayerMovement()
             }
         }
         // is the head of the snake on any of the disabled HexaPositions?
-        for(var i = 0; i < DisabledHexagonsList.length; i++)
+        for(var i = 0; i < disabledHexagonsList.length; i++)
         {
-            if(playerTrail[0].x == DisabledHexagonsList[i].x && playerTrail[0].y == DisabledHexagonsList[i].y)
+            if(playerTrail[0].x == disabledHexagonsList[i].x && playerTrail[0].y == disabledHexagonsList[i].y)
             {
                 switchToGameOver();
             }   
@@ -739,10 +764,14 @@ function repositionItem()
     item.y = itemScreenPos.y;
 }
 
+
 function getNewRandomItemPosition()
 {
+
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
+
+    // FIXME: Not on blocked Tiles!
 
     playerTrail.forEach(function(val) {
         if(val.x == itemPosition.x && val.y == itemPosition.y)
@@ -756,25 +785,25 @@ function getNewRandomItemPosition()
 function getNewRandomDisabledHexagons()
 {
     // clear the Array
-    DisabledHexagonsList = [];
+    disabledHexagonsList = [];
 
     // clear the group
-    DisabledHexagonGroup.removeAll();
+    disabledHexagonGroup.removeAll();
 
-    for(var i = 0; i < DisabledHexagonCount; i++)
+    for(var i = 0; i < disabledHexagonCount; i++)
     {
         var pos = {x : 0, y : 1};
 
         pos.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
         pos.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
-        DisabledHexagonsList[i] = pos;
+        disabledHexagonsList[i] = pos;
 
         newCoords = getScreenPosition(pos.x, pos.y);
         var p = game.add.sprite(newCoords.x, newCoords.y, 'blocked');
         //p.anchor.x = 0.25;
         //p.anchor.y = 0;
         //p.alpha = (i == 0 ? 1 : config.TRAIL_ALPHA);
-        DisabledHexagonGroup.add(p);
+        disabledHexagonGroup.add(p);
     }
 }
 
@@ -850,6 +879,10 @@ function update()
             playerTrail.push({ x: itemPosition.x, y: itemPosition.y });
             playerItemCounter++;
             getNewRandomItemPosition();
+
+            remainingHexagonsForThisLevel--;
+            // change the text
+            remainingHexagonText.setText("" + remainingHexagonsForThisLevel + " " + i18n[lang][12]);
             playerItemText.setText(config.SCORE_MULTIPLIER * playerItemCounter + ' ' + i18n[lang][1]);
 
             config.MOVEMENT_INCREMENT_CURRENT = config.MOVEMENT_INCREMENT_START - (config.MOVEMENT_INCREMENT_DELTA * playerItemCounter);
@@ -860,6 +893,11 @@ function update()
             var pickupSound = game.add.audio('pickup');
             pickupSound.play("", 0, 0.25);
             particleBurstItemPickup();
+
+            if(remainingHexagonsForThisLevel <= 0)
+            {
+                switchIntoBetweenLevelScreen();
+            }
         }
 
 
