@@ -36,6 +36,7 @@ var hexagons = [];
 var disabledHexagonsList = [];
 var disabledHexagonCount;
 var disabledHexagonGroup;
+var disabledHexagonTween;
 
 var currentLevel;
 var remainingHexagonsForThisLevel;
@@ -215,6 +216,7 @@ function create()
     hexagonTween = game.add.tween(game.hexagonGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
     playerStartTween = game.add.tween(playerGroup).to({ y: 0 }, 2000, Phaser.Easing.Bounce.Out, false);
     hexagonStartTween = game.add.tween(game.hexagonGroup).to({ y: 0 }, 2000, Phaser.Easing.Bounce.Out, false);
+    disabledHexagonTween = game.add.tween(disabledHexagonGroup).to({ y: 0 }, 2000, Phaser.Easing.Bounce.Out, false);
     playerStartTween.onComplete.add(function() {
         tweensFinished = true;
     }, this);
@@ -232,8 +234,6 @@ function create()
     disabledHexagonCount = 2;
     currentLevel = 0;
     remainingHexagonsForThisLevel = 5;
-
-    getNewRandomDisabledHexagons();
 }
 
 
@@ -426,12 +426,15 @@ function switchIntoGame()
 
         hexagonStartTween.start();
         playerStartTween.start();
+        disabledHexagonTween.start();
 
         getNewRandomItemPosition();
         game.hexagonGroup.add(item);
         isInMenu = false;
 
         muteButton.visible = true;
+
+        getNewRandomDisabledHexagons();
     }
     else
     {
@@ -446,11 +449,14 @@ function switchIntoBetweenLevelScreen()
 {
     // FIXME Tween and Juice
 
+    var oldPlayerItemCount = playerItemCounter;
     currentLevel++;
     disabledHexagonCount += 3;
     remainingHexagonsForThisLevel = 5 + currentLevel * 2;
     getNewRandomDisabledHexagons();
     resetGame();
+    
+    playerItemCounter = oldPlayerItemCount;
 }
 
 function doTouchInput(pointer)
@@ -771,10 +777,15 @@ function getNewRandomItemPosition()
     itemPosition.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
     itemPosition.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
 
-    // FIXME: Not on blocked Tiles!
-
     playerTrail.forEach(function(val) {
         if(val.x == itemPosition.x && val.y == itemPosition.y)
+        {
+            getNewRandomItemPosition();
+            return;
+        }
+    });
+    disabledHexagonsList.forEach(function(val) {
+       if(val.x == itemPosition.x && val.y == itemPosition.y)
         {
             getNewRandomItemPosition();
             return;
@@ -790,18 +801,21 @@ function getNewRandomDisabledHexagons()
     // clear the group
     disabledHexagonGroup.removeAll();
 
+    // FIXME Not directly on or in front of Player's spawing position
+
     for(var i = 0; i < disabledHexagonCount; i++)
     {
         var pos = {x : 0, y : 1};
 
-        pos.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
-        pos.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
+        pos.x = game.rnd.integerInRange(2, config.WORLD_SIZE.x-1);  // not on the outest layer, since this could lead to unbeatable situations
+        pos.y = game.rnd.integerInRange(2, config.WORLD_SIZE.y-1);
+       
         disabledHexagonsList[i] = pos;
 
         newCoords = getScreenPosition(pos.x, pos.y);
         var p = game.add.sprite(newCoords.x, newCoords.y, 'blocked');
-        //p.anchor.x = 0.25;
-        //p.anchor.y = 0;
+        p.anchor.x = 0.25;
+        p.anchor.y = 0;
         //p.alpha = (i == 0 ? 1 : config.TRAIL_ALPHA);
         disabledHexagonGroup.add(p);
     }
@@ -917,6 +931,7 @@ function update()
 
             gameOverText.setText(i18n[lang][2] +"\n"+ deviceDependentRestartText);
         }
+
         doPlayerMovement();
         repositionItem();
     }
@@ -926,6 +941,7 @@ function resetGame()
 {
     playerTween.stop();
     hexagonTween.stop();
+    disabledHexagonTween.stop();
 
     twitterButton.visible = false;
 
@@ -935,14 +951,16 @@ function resetGame()
 
     playerTween = game.add.tween(playerGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
     hexagonTween = game.add.tween(game.hexagonGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
+    disabledHexagonTween = game.add.tween(game.hexagonGroup).to({ y: game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
 
     playerGroup.y = 0;
     game.hexagonGroup.y = 0;
+    disabledHexagonGroup.y = 0;
 
     playerTrail =
     [
-        { x: 2, y: 2},
-        { x: 1, y: 1}
+        { x: 4, y: 2},
+        { x: 4, y: 1}
     ];
     playerItemCounter = 0;
     config.MOVEMENT_INCREMENT_CURRENT = config.MOVEMENT_INCREMENT_START;
