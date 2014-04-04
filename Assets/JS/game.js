@@ -33,6 +33,11 @@ var movementTimer = 0;
 var hexagonParameters = {};
 var hexagons = [];
 
+var DisabledHexagonsList = [];
+var DisabledHexagonCount;
+var DisabledHexagonGroup;
+
+
 var itemPosition = {x : 0, y : 1};
 
 var playerItemCounter = 0;
@@ -66,6 +71,8 @@ var tutorialSprite;
 
 var lang = navigator.language.substr(0, 2);
 
+
+
 DirectionEnum = {
     NORTH     : 0,
     NORTHEAST : 1,
@@ -90,9 +97,9 @@ function preload()
     game.load.image('tut', 'Assets/GFX/tut.png');
 
     game.load.spritesheet('item', 'Assets/GFX/tileBlocked.png', 51, 45);
-
     game.load.image('twitter', 'Assets/GFX/twitter.png');
     game.load.spritesheet('mute', 'Assets/GFX/mute.png', 51, 44);
+    game.load.image('blocked', 'Assets/GFX/item.png');
 
     game.load.audio('pickup', ['Assets/Audio/pickup.ogg', 'Assets/Audio/pickup.mp3']);
     game.load.audio('fail', ['Assets/Audio/fail.ogg', 'Assets/Audio/fail.mp3']);
@@ -123,8 +130,8 @@ function create()
     hexagonParameters.r = config.HEXAGON_SIZE / 2.0;
 
     game.hexagonGroup = game.add.group();
-
     playerGroup = game.add.group();
+    DisabledHexagonGroup = game.add.group();
 
 	cursors = game.input.keyboard.createCursorKeys();
     cursors.right.onDown.add(player1TurnRight, this);
@@ -219,8 +226,9 @@ function create()
 
     repositionPlayerSprites();
 
+    DisabledHexagonCount = 2;
 
-    
+    getNewRandomDisabledHexagons();
 }
 
 
@@ -660,6 +668,14 @@ function doPlayerMovement()
                 switchToGameOver();
             }
         }
+        // is the head of the snake on any of the disabled HexaPositions?
+        for(var i = 0; i < DisabledHexagonsList.length; i++)
+        {
+            if(playerTrail[0].x == DisabledHexagonsList[i].x && playerTrail[0].y == DisabledHexagonsList[i].y)
+            {
+                switchToGameOver();
+            }   
+        }
 
 
         repositionPlayerSprites();
@@ -735,6 +751,31 @@ function getNewRandomItemPosition()
             return;
         }
     });
+}
+
+function getNewRandomDisabledHexagons()
+{
+    // clear the Array
+    DisabledHexagonsList = [];
+
+    // clear the group
+    DisabledHexagonGroup.removeAll();
+
+    for(var i = 0; i < DisabledHexagonCount; i++)
+    {
+        var pos = {x : 0, y : 1};
+
+        pos.x = game.rnd.integerInRange(1, config.WORLD_SIZE.x);
+        pos.y = game.rnd.integerInRange(1, config.WORLD_SIZE.y);
+        DisabledHexagonsList[i] = pos;
+
+        newCoords = getScreenPosition(pos.x, pos.y);
+        var p = game.add.sprite(newCoords.x, newCoords.y, 'blocked');
+        //p.anchor.x = 0.25;
+        //p.anchor.y = 0;
+        //p.alpha = (i == 0 ? 1 : config.TRAIL_ALPHA);
+        DisabledHexagonGroup.add(p);
+    }
 }
 
 function musicMutechange()
@@ -820,6 +861,7 @@ function update()
             pickupSound.play("", 0, 0.25);
             particleBurstItemPickup();
         }
+
 
         if(isGameOver)
         {
