@@ -41,6 +41,23 @@ HexagonSnake.MainMenu.prototype =
         this.particleEmitterMuteButton.minParticleSpeed.setTo(-HexagonSnake.config.PARTICLESPEEDRANGE, -HexagonSnake.config.PARTICLESPEEDRANGE);
         this.particleEmitterMuteButton.maxParticleSpeed.setTo(HexagonSnake.config.PARTICLESPEEDRANGE, HexagonSnake.config.PARTICLESPEEDRANGE);
         this.particleEmitterMuteButton.gravity = 200;
+
+        this.input.onDown.add(this.startGame, this);
+    },
+
+    update: function()
+    {
+
+        //  Do some nice funky main menu effect here
+
+    },
+
+    startGame: function(pointer)
+    {
+
+        //  And start the actual game
+        this.game.state.start('Game');
+
     },
 
     musicMutechange: function()
@@ -76,21 +93,6 @@ HexagonSnake.MainMenu.prototype =
 
         var particleAlphaTween = this.add.tween(this.particleEmitterMuteButton).to({ alpha: 0 }, HexagonSnake.config.PARTICLEFADEOUTTIME, Phaser.Easing.Cubic.Out, true);
         particleAlphaTween.onComplete.add(function (){ this.particleEmitterMuteButton.alpha = 0; } , this);
-    },
-
-    update: function()
-    {
-
-        //  Do some nice funky main menu effect here
-
-    },
-
-    startGame: function(pointer)
-    {
-
-        //  And start the actual game
-        this.state.start('Game');
-
     },
 
     createText: function()
