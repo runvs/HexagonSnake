@@ -341,6 +341,7 @@ HexagonSnake.Game.prototype =
         this.hexagonGroup.y = 0;
         this.disabledHexagonGroup.y = 0;
 
+		this.playerTrail=[];// clean array
         this.playerTrail =
         [
             { x: 4, y: 2},
@@ -348,12 +349,16 @@ HexagonSnake.Game.prototype =
         ];
 		this.playerGroup.removeAll();
 		this.repositionPlayerSprites();
+        
+        this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_START - (this.config.MOVEMENT_INCREMENT_DELTA * this.playerItemCounter);
+        if(this.config.MOVEMENT_INCREMENT_CURRENT <= this.config.MOVEMENT_INCREMENT_MIN)
+        {
+            this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_MIN;
+        }
+        this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + ' ' +  i18n[HexagonSnake.lang][1]);
+		this.playerItemCounter = 0;
 		
-
-        this.playerItemCounter = 0;
-        this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_START;
-        this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + ' ' i18n[HexagonSnake.lang][1]);
-
+		
         this.isGameOver = false;
         this.gameOverText.setText('');
 
@@ -864,7 +869,7 @@ HexagonSnake.Game.prototype =
 
         var failSound = this.add.audio('fail');
         failSound.play('', 0, 0.125);
-        
+        this.playerTrail = [{x: 4, y: 2}, {x: 4, y: 1}];
         this.playerTween.start();
         this.hexagonTween.start();
         this.disabledHexagonTween.start();
@@ -875,7 +880,10 @@ HexagonSnake.Game.prototype =
 		
         this.twitterButton.visible = true;
 		this.remainingHexagonText.setText ("");
+		this.tweensFinished = false;
 		
+		this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_START;
+		this.playerItemCounter = 0;
     },
 
     tweetScore: function()
