@@ -102,39 +102,15 @@ HexagonSnake.MainMenu.prototype =
     {
         var textLeftMargin = this.game.width / 20;
         var textTopMargin = this.game.width / 20;
-        playerItemText = this.game.add.text(textLeftMargin, textTopMargin, '0 ' + i18n[HexagonSnake.lang][1] , {
-            font: '20px Arial',
-            fill: ' #6088ff',
-            align: 'left'
-        });
-        playerItemText.anchor.setTo(0, 0.5);
-        playerItemText.setText('');
-
-        remainingHexagonText = this.game.add.text(this.game.width - textLeftMargin, textTopMargin, '' + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12] , {
-            font: '20px Arial',
-            fill: ' #6088ff',
-            align: 'right'
-        });
-        remainingHexagonText.anchor.setTo(2, 0.5);
-        remainingHexagonText.setText('');
-
-        gameOverText = this.game.add.text(this.game.width / 2, this.game.height / 2, i18n[HexagonSnake.lang][2], {
-            font: '25px Arial',
-            fill: ' #ff8860',
-            align: 'center'
-        });
-        gameOverText.setText('');
-        gameOverText.anchor.setTo(0.5, 0.5);
-
-
-        menuTextGameName = this.game.add.text(this.game.width/2, textTopMargin, i18n[HexagonSnake.lang][0], {
+        
+        var menuTextGameName = this.game.add.text(this.game.width/2, textTopMargin, i18n[HexagonSnake.lang][0], {
             font: '45px Arial',
             fill: ' #ff8860',
             align: 'left'
         });
         menuTextGameName.anchor.setTo(0.5,0.5);
 
-        menuTextCredits = this.game.add.text(textLeftMargin, this.game.height - textTopMargin, i18n[HexagonSnake.lang][11], {
+        var menuTextCredits = this.game.add.text(textLeftMargin, this.game.height - textTopMargin, i18n[HexagonSnake.lang][11], {
             font: '15px Arial',
             fill: ' #ff8860',
             align: 'left'
@@ -145,21 +121,21 @@ HexagonSnake.MainMenu.prototype =
         // plattform dependent text
         if (this.game.device.desktop)
         {
-            menuTextInfo = this.game.add.text(this.game.width/2, 65, i18n[HexagonSnake.lang][3], {
+            var menuTextInfo = this.game.add.text(this.game.width/2, 65, i18n[HexagonSnake.lang][3], {
                 font: '25px Arial',
                 fill: ' #ff8860',
                 align: 'left'
             });
             menuTextInfo.anchor.setTo(0.5,0.5);
 
-            menuTextTutorial1 = this.game.add.text(textLeftMargin, this.game.height/2 - 25, i18n[HexagonSnake.lang][5], {
+            var menuTextTutorial1 = this.game.add.text(textLeftMargin, this.game.height/2 - 25, i18n[HexagonSnake.lang][5], {
                 font: '25px Arial',
                 fill: ' #7799ff',
                 align: 'left'
             });
             menuTextTutorial1.anchor.setTo(0,0.5);
 
-            menuTextTutorial2 = this.game.add.text(this.game.width - textLeftMargin, this.game.height/2 + 25, i18n[HexagonSnake.lang][7], {
+            var menuTextTutorial2 = this.game.add.text(this.game.width - textLeftMargin, this.game.height/2 + 25, i18n[HexagonSnake.lang][7], {
                 font: '25px Arial',
                 fill: ' #7799ff',
                 align: 'left'
@@ -168,23 +144,23 @@ HexagonSnake.MainMenu.prototype =
 
          
         }
-        else    // on mobile devices
+        else // on mobile devices
         {
-            menuTextInfo = this.game.add.text(this.game.width/2, 65, i18n[HexagonSnake.lang][4], {
+            var menuTextInfo = this.game.add.text(this.game.width/2, 65, i18n[HexagonSnake.lang][4], {
                 font: '25px Arial',
                 fill: ' #ff8860',
                 align: 'left'
             });
             menuTextInfo.anchor.setTo(0.5,0.5);
 
-            menuTextTutorial1 = this.game.add.text(textLeftMargin, this.game.height/2 - 25,  i18n[HexagonSnake.lang][6], {
+            var menuTextTutorial1 = this.game.add.text(textLeftMargin, this.game.height/2 - 25,  i18n[HexagonSnake.lang][6], {
                 font: '25px Arial',
                 fill: ' #7799ff',
                 align: 'left'
             });
             menuTextTutorial1.anchor.setTo(0,0.5);
 
-            menuTextTutorial2 = this.game.add.text(this.game.width - textLeftMargin, this.game.height/2 + 25, i18n[HexagonSnake.lang][8], {
+            var menuTextTutorial2 = this.game.add.text(this.game.width - textLeftMargin, this.game.height/2 + 25, i18n[HexagonSnake.lang][8], {
                 font: '25px Arial',
                 fill: ' #7799ff',
                 align: 'left'
