@@ -387,11 +387,11 @@ HexagonSnake.Game.prototype =
 
         if(this.isGameOver)
         {
-            if(pointer.x < twitterButton.x - twitterButton.width * 2
-                || pointer.x > twitterButton.x + twitterButton.width * 2)
+            if(pointer.x < this.twitterButton.x - this.twitterButton.width * 2
+            || pointer.x > this.twitterButton.x + this.twitterButton.width * 2)
             {
-                if(pointer.y < twitterButton.y - twitterButton.width * 2
-                    || pointer.y > twitterButton.y + twitterButton.width * 2)
+                if(pointer.y < this.twitterButton.y - this.twitterButton.width * 2
+                || pointer.y > this.twitterButton.y + this.twitterButton.width * 2)
                 {
                     this.resetGame();
                 }
