@@ -141,17 +141,20 @@ HexagonSnake.Game.prototype =
         this.particleEmitterItemPickup.gravity = 200;
 
         // Set hexagons' y position
-        this.hexagonGroup.y = this.playerGroup.y = this.game.height * -window.devicePixelRatio;
+        this.hexagonGroup.y = this.disabledHexagonGroup.y = this.playerGroup.y = this.game.height * -window.devicePixelRatio;
 
         // Set up the tweens
-        this.playerTween = this.add.tween(this.playerGroup).to({ y: this.game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
-        this.hexagonTween = this.add.tween(this.hexagonGroup).to({ y: this.game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
+        // Start tweens
         this.hexagonStartTween = this.add.tween(this.hexagonGroup).to({ y: 0 }, 2000, Phaser.Easing.Bounce.Out, false);
-        this.disabledHexagonTween = this.add.tween(this.disabledHexagonGroup).to({ y: 0 }, 2000, Phaser.Easing.Bounce.Out, false);
+        this.disabledHexagonStartTween = this.add.tween(this.disabledHexagonGroup).to({ y: 0 }, 2000, Phaser.Easing.Bounce.Out, false);
         this.playerStartTween = this.add.tween(this.playerGroup).to({ y: 0 }, 2000, Phaser.Easing.Bounce.Out, false);
         this.playerStartTween.onComplete.add(function() {
             this.tweensFinished = true;
         }, this);
+        // End tweens
+        this.playerTween = this.add.tween(this.playerGroup).to({ y: this.game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
+        this.hexagonTween = this.add.tween(this.hexagonGroup).to({ y: this.game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
+        this.disabledHexagonTween = this.add.tween(this.disabledHexagonGroup).to({ y: this.game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
 
         // Finally set some basic values
         this.repositionPlayerSprites();
@@ -175,7 +178,7 @@ HexagonSnake.Game.prototype =
 
         this.hexagonStartTween.start();
         this.playerStartTween.start();
-        this.disabledHexagonTween.start();
+        this.disabledHexagonStartTween.start();
 
         this.getNewRandomItemPosition();
         this.hexagonGroup.add(this.item);
@@ -817,6 +820,7 @@ HexagonSnake.Game.prototype =
         
         this.playerTween.start();
         this.hexagonTween.start();
+        this.disabledHexagonTween.start();
 
         this.playerItemText.x = this.game.width / 2;
         this.playerItemText.y = this.game.height / 2 + 45;
