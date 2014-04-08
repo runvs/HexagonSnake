@@ -12,7 +12,7 @@ HexagonSnake.Boot.prototype =
     {
         console.log('%c Boot Preload ', 'background: #222; color: #bada55');
 
-        this.load.image('preloaderBar', 'Assets/GFX/Preloader_Bar.png');
+        this.load.image('preloaderBar', 'Assets/GFX/Preloader_bar.png');
 
     },
 
