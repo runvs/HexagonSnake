@@ -551,7 +551,7 @@ HexagonSnake.Game.prototype =
 
             newCoords = this.getScreenPosition(pos.x, pos.y);
             var p = this.add.sprite(newCoords.x, newCoords.y, 'blocked');
-            p.anchor.x = 0.25;
+            p.anchor.x = 0.24;
             p.anchor.y = 0;          
             this.disabledHexagonGroup.add(p);
         }
