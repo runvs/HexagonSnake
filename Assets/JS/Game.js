@@ -323,7 +323,7 @@ HexagonSnake.Game.prototype =
 
         this.playerTween = this.add.tween(this.playerGroup).to({ y: this.game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
         this.hexagonTween = this.add.tween(this.hexagonGroup).to({ y: this.game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
-        this.disabledHexagonTween = this.add.tween(this.hexagonGroup).to({ y: this.game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
+        this.disabledHexagonTween = this.add.tween(this.disabledHexagonGroup).to({ y: this.game.height * window.devicePixelRatio }, 1200, Phaser.Easing.Cubic.In, false);
 
         this.playerGroup.y = 0;
         this.hexagonGroup.y = 0;
