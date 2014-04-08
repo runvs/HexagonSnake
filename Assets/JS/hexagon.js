@@ -1,4 +1,4 @@
-function Hexagon(x, y, game, p, spriteName)
+function Hexagon(x, y, game, p, spriteName, hexagonGroup)
 {
     this.x = x;
     this.y = y;
@@ -15,7 +15,7 @@ function Hexagon(x, y, game, p, spriteName)
     
 
     this.graphics = game.add.sprite(offX, offY, spriteName);
-    game.hexagonGroup.add(this.graphics);
+    hexagonGroup.add(this.graphics);
 
     this.graphics.animations.add('ani');
 
