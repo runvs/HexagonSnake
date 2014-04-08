@@ -140,6 +140,15 @@ HexagonSnake.Game.prototype =
         this.particleEmitterItemPickup.maxParticleSpeed.setTo(this.config.PARTICLESPEEDRANGE, this.config.PARTICLESPEEDRANGE);
         this.particleEmitterItemPickup.gravity = 200;
 
+        this.particleEmitterMuteButton = this.add.emitter(0, 0, 100);
+        this.particleEmitterMuteButton.makeParticles('tile');  
+        this.particleEmitterMuteButton.alpha = 1;
+        this.particleEmitterMuteButton.maxParticleScale= 0.5;
+        this.particleEmitterMuteButton.minParticleScale = 0.25;
+        this.particleEmitterMuteButton.minParticleSpeed.setTo(-this.config.PARTICLESPEEDRANGE, -this.config.PARTICLESPEEDRANGE);
+        this.particleEmitterMuteButton.maxParticleSpeed.setTo(this.config.PARTICLESPEEDRANGE, this.config.PARTICLESPEEDRANGE);
+        this.particleEmitterMuteButton.gravity = 200;
+
         // Set hexagons' y position
         this.hexagonGroup.y = this.disabledHexagonGroup.y = this.playerGroup.y = this.game.height * -window.devicePixelRatio;
 
@@ -162,6 +171,14 @@ HexagonSnake.Game.prototype =
         this.disabledHexagonCount = 2;
         this.currentLevel = 0;
         this.remainingHexagonsForThisLevel = 5;
+
+        // Mute on pause, unmute on resume
+        this.game.onPause.add(function()
+        {
+            this.previousMuteState = this.game.sound.mute;
+            this.game.sound.mute = true;
+        }, this);
+        this.game.onResume.add(function() { this.game.sound.mute = this.previousMuteState; }, this);
 
         // Switch into the game
         this.createText();
