@@ -278,7 +278,11 @@ HexagonSnake.Game.prototype =
         this.remainingHexagonsForThisLevel = 5 + this.currentLevel * 2;
         this.getNewRandomDisabledHexagons();
         this.resetGame();
-        
+        this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_START - (this.config.MOVEMENT_INCREMENT_DELTA * this.playerItemCounter);
+        if(this.config.MOVEMENT_INCREMENT_CURRENT <= this.config.MOVEMENT_INCREMENT_MIN)
+        {
+			this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_MIN;
+        }
         this.playerItemCounter = oldPlayerItemCount;
 		// manually fix the Score text
 		this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + i18n[HexagonSnake.lang][1]);
