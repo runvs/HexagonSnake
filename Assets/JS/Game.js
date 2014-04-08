@@ -130,6 +130,16 @@ HexagonSnake.Game.prototype =
         this.twitterButton.anchor.setTo(0.5, 0.5);
         this.twitterButton.visible = false;
 
+        // Set the mute button's initial state
+        if(this.game.sound.mute)
+        {
+            this.muteButton.setFrames(0, 1, 1);
+        }
+        else
+        { 
+            this.muteButton.setFrames(1, 0, 0);
+        }
+
         // Create particle emitter for item pickups
         this.particleEmitterItemPickup = this.add.emitter(0, 0, 100);
         this.particleEmitterItemPickup.makeParticles('item');  
@@ -588,11 +598,11 @@ HexagonSnake.Game.prototype =
         this.particleBurstMuteButton();
         if(this.game.sound.mute)
         {
-            this.muteButton.setFrames(0,1,1)   
+            this.muteButton.setFrames(0, 1, 1);
         }
         else
         { 
-            this.muteButton.setFrames(1,0,0) 
+            this.muteButton.setFrames(1, 0, 0);
         }
     },
 
