@@ -42,21 +42,16 @@ HexagonSnake.MainMenu.prototype =
         this.particleEmitterMuteButton.maxParticleSpeed.setTo(HexagonSnake.config.PARTICLESPEEDRANGE, HexagonSnake.config.PARTICLESPEEDRANGE);
         this.particleEmitterMuteButton.gravity = 200;
 
-        this.input.onDown.add(this.startGame, this);
+        this.input.onDown.add(this.doTouchInput, this);
     },
 
-    update: function()
+    doTouchInput: function(pointer)
     {
 
-        //  Do some nice funky main menu effect here
-
-    },
-
-    startGame: function(pointer)
-    {
-
-        //  And start the actual game
-        this.game.state.start('Game');
+        if(pointer.y > 60)
+        {
+            this.game.state.start('Game');
+        }
 
     },
 

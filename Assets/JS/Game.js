@@ -33,9 +33,7 @@ HexagonSnake.Game.prototype =
 
     create: function()
     {
-
-        //  Honestly, just about anything could go here. It's YOUR game after all. Eat your heart out!
-
+        
     },
 
     update: function()
@@ -63,7 +61,7 @@ HexagonSnake.Game.prototype =
 
         this.game.sound.mute = !this.game.sound.mute;
         
-        particleBurstMuteButton();
+        this.particleBurstMuteButton();
         if(this.game.sound.mute)
         {
             this.muteButton.setFrames(0,1,1)   
