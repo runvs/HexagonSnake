@@ -318,7 +318,7 @@ HexagonSnake.Game.prototype =
 			this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_MIN;
         }
 		// manually fix the Score text
-		this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + i18n[HexagonSnake.lang][1]);
+		this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + ' ' + i18n[HexagonSnake.lang][1]);
     },
 
     resetGame: function()
@@ -352,7 +352,7 @@ HexagonSnake.Game.prototype =
 
         this.playerItemCounter = 0;
         this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_START;
-        this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + i18n[HexagonSnake.lang][1]);
+        this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + ' ' i18n[HexagonSnake.lang][1]);
 
         this.isGameOver = false;
         this.gameOverText.setText('');
