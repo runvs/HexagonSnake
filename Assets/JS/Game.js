@@ -55,7 +55,7 @@ HexagonSnake.Game = function(game)
         NORTHWEST : 5
     }
 
-    this.playerTrail = [{x: 0, y: 1}, {x: 0, y: 1}];
+    this.playerTrail = [{x: 4, y: 2}, {x: 4, y: 1}];
     this.itemPosition = {x : 0, y : 1};
     
     this.hexagonParameters = {};
@@ -214,14 +214,15 @@ HexagonSnake.Game.prototype =
             pickupSound.play('', 0, 0.25);
             this.particleBurstItemPickup();
 
-            if(this.remainingHexagonsForThisLevel <= 0)
-            {
-                this.switchIntoBetweenLevelScreen();
-            }
+            
         }
 
-
-        if(this.isGameOver)
+		if(this.remainingHexagonsForThisLevel <= 0)
+        {
+            this.switchIntoBetweenLevelScreen();
+        }
+        
+		if(this.isGameOver)
         {
             var deviceDependentRestartText = '';
             if (this.game.device.desktop)
@@ -268,15 +269,19 @@ HexagonSnake.Game.prototype =
     switchIntoBetweenLevelScreen: function()
     {
         // FIXME Tween and Juice
-
         var oldPlayerItemCount = this.playerItemCounter;
         this.currentLevel++;
+		this.playerTrail = [{x: 4, y: 2}, {x: 4, y: 1}];
+		this.player1Direction = this.DirectionEnum.SOUTH;
+		this.repositionPlayerSprites();
         this.disabledHexagonCount += 3;
         this.remainingHexagonsForThisLevel = 5 + this.currentLevel * 2;
         this.getNewRandomDisabledHexagons();
         this.resetGame();
         
         this.playerItemCounter = oldPlayerItemCount;
+		// manually fix the Score text
+		this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + i18n[HexagonSnake.lang][1]);
     },
 
     resetGame: function()
@@ -314,7 +319,7 @@ HexagonSnake.Game.prototype =
 
         this.getNewRandomItemPosition();
 
-        this.player1Direction = this.DirectionEnum.SOUTHEAST;
+		this.player1Direction = this.DirectionEnum.SOUTH;
     },
 
     createText: function()
@@ -535,14 +540,19 @@ HexagonSnake.Game.prototype =
 
             pos.x = this.rnd.integerInRange(2, this.config.WORLD_SIZE.x - 1);  // not on the outer layer, since this could lead to unbeatable situations
             pos.y = this.rnd.integerInRange(2, this.config.WORLD_SIZE.y - 1);
-           
+			
+			while(pos.x == 4 && pos.y <= 4 )
+			{
+				pos.x = this.rnd.integerInRange(2, this.config.WORLD_SIZE.x - 1);  // not on the outer layer, since this could lead to unbeatable situations
+				pos.y = this.rnd.integerInRange(2, this.config.WORLD_SIZE.y - 1);
+			}
+			
             this.disabledHexagonsList[i] = pos;
 
             newCoords = this.getScreenPosition(pos.x, pos.y);
             var p = this.add.sprite(newCoords.x, newCoords.y, 'blocked');
             p.anchor.x = 0.25;
-            p.anchor.y = 0;
-            //p.alpha = (i == 0 ? 1 : config.TRAIL_ALPHA);
+            p.anchor.y = 0;          
             this.disabledHexagonGroup.add(p);
         }
     },
