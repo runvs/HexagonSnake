@@ -295,7 +295,9 @@ HexagonSnake.Game.prototype =
 		this.player1Direction = this.DirectionEnum.SOUTH;
 		this.repositionPlayerSprites();
         this.disabledHexagonCount += 3;
-        this.remainingHexagonsForThisLevel = 5 + this.currentLevel * 2;
+        
+		this.remainingHexagonsForThisLevel = 5 + this.currentLevel * 2;
+		this.remainingHexagonText.setText('' + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12]);
         this.getNewRandomDisabledHexagons();
         this.resetGame();
         this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_START - (this.config.MOVEMENT_INCREMENT_DELTA * this.playerItemCounter);
@@ -333,6 +335,8 @@ HexagonSnake.Game.prototype =
             { x: 4, y: 2},
             { x: 4, y: 1}
         ];
+		this.repositionPlayerSprites();
+		//this.playerGroup.removeAll();
 
         this.playerItemCounter = 0;
         this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_START;
@@ -856,8 +860,10 @@ HexagonSnake.Game.prototype =
         this.playerItemText.x = this.game.width / 2;
         this.playerItemText.y = this.game.height / 2 + 45;
         this.playerItemText.anchor.x = 0.5;
-
+		
         this.twitterButton.visible = true;
+		this.remainingHexagonText.setText ("");
+		
     },
 
     tweetScore: function()
