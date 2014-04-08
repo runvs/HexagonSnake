@@ -229,7 +229,7 @@ HexagonSnake.Game.prototype =
             this.remainingHexagonsForThisLevel--;
 
             // Change the text
-            this.remainingHexagonText.setText(this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12]);
+            this.remainingHexagonText.setText('Level ' + this.currentLevel + '  ' + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12]);
             this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + ' ' + i18n[HexagonSnake.lang][1]);
 
             // Increment snake speed
@@ -307,15 +307,16 @@ HexagonSnake.Game.prototype =
         this.disabledHexagonCount += 3;
         
 		this.remainingHexagonsForThisLevel = 5 + this.currentLevel * 2;
-		this.remainingHexagonText.setText('' + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12]);
+		this.remainingHexagonText.setText('Level ' + this.currentLevel + '  '  + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12]);
         this.getNewRandomDisabledHexagons();
         this.resetGame();
+
+        this.playerItemCounter = oldPlayerItemCount;
         this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_START - (this.config.MOVEMENT_INCREMENT_DELTA * this.playerItemCounter);
         if(this.config.MOVEMENT_INCREMENT_CURRENT <= this.config.MOVEMENT_INCREMENT_MIN)
         {
 			this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_MIN;
         }
-        this.playerItemCounter = oldPlayerItemCount;
 		// manually fix the Score text
 		this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + i18n[HexagonSnake.lang][1]);
     },
@@ -345,8 +346,9 @@ HexagonSnake.Game.prototype =
             { x: 4, y: 2},
             { x: 4, y: 1}
         ];
+		this.playerGroup.removeAll();
 		this.repositionPlayerSprites();
-		//this.playerGroup.removeAll();
+		
 
         this.playerItemCounter = 0;
         this.config.MOVEMENT_INCREMENT_CURRENT = this.config.MOVEMENT_INCREMENT_START;
@@ -378,7 +380,7 @@ HexagonSnake.Game.prototype =
             fill: ' #6088ff',
             align: 'right'
         });
-        this.remainingHexagonText.anchor.setTo(2, 0.5);
+        this.remainingHexagonText.anchor.setTo(1.5, 0.5);
         this.remainingHexagonText.setText('');
 
         this.gameOverText = this.add.text(this.game.width / 2, this.game.height / 2, i18n[HexagonSnake.lang][2], {
@@ -390,7 +392,7 @@ HexagonSnake.Game.prototype =
         this.gameOverText.anchor.setTo(0.5, 0.5);
 
         this.playerItemText.setText('0 ' + i18n[HexagonSnake.lang][1]);
-        this.remainingHexagonText.setText('' + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12]);
+        this.remainingHexagonText.setText('Level ' + this.currentLevel + '  ' + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12]);
     },
 
     doTouchInput: function(pointer)
