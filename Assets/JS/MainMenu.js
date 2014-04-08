@@ -43,6 +43,9 @@ HexagonSnake.MainMenu.prototype =
         this.particleEmitterMuteButton.gravity = 200;
 
         this.input.onDown.add(this.doTouchInput, this);
+        
+        var space = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        space.onDown.add(this.switchIntoGame, this);
     },
 
     doTouchInput: function(pointer)
@@ -50,9 +53,14 @@ HexagonSnake.MainMenu.prototype =
 
         if(pointer.y > 60)
         {
-            this.game.state.start('Game');
+            this.switchIntoGame();
         }
 
+    },
+
+    switchIntoGame: function()
+    {
+        this.game.state.start('Game');
     },
 
     musicMutechange: function()
