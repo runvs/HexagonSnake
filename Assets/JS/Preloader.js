@@ -51,8 +51,8 @@ HexagonSnake.Preloader.prototype =
         this.load.audio('music', ['Assets/Audio/music.ogg', 'Assets/Audio/music.mp3']);
 
         // Load hexagon.js and i18n.js here
-        this.load.script('hexagon.js', 'Assets/Js/hexagon.js');
-        this.load.script('i18n.js', 'Assets/Js/i18n.js');
+        this.load.script('hexagon.js', 'Assets/JS/hexagon.js');
+        this.load.script('i18n.js', 'Assets/JS/i18n.js');
     },
 
     create: function()
