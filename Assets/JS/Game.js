@@ -402,7 +402,6 @@ HexagonSnake.Game.prototype =
 
     doTouchInput: function(pointer)
     {
-
         if(pointer.y > 60)
         {
             if(pointer.x < this.game.width / 2)
@@ -423,9 +422,19 @@ HexagonSnake.Game.prototype =
                 if(pointer.y < this.twitterButton.y - this.twitterButton.width * 2
                 || pointer.y > this.twitterButton.y + this.twitterButton.width * 2)
                 {
-                    this.resetGame();
+                    if(pointer.x < this.muteButton.x - this.muteButton.width * 2
+					|| pointer.x > this.muteButton.x + this.muteButton.width * 2)
+					{
+						if(pointer.y < this.muteButton.y - this.muteButton.width * 2
+						|| pointer.y > this.muteButton.y + this.muteButton.width * 2)
+						{
+							this.resetGame();
+						}
+					}
                 }
             }
+			
+			
         }
 
     },

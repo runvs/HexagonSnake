@@ -3,7 +3,7 @@ var HexagonSnake = HexagonSnake || {};
 HexagonSnake.MainMenu = function(game)
 {
     console.log('%c MainMenu Constructor ', 'background: #eee; color: #b000b5');
-
+	
     this.music = null;
     this.playButton = null;
 };
@@ -60,7 +60,8 @@ HexagonSnake.MainMenu.prototype =
 
     switchIntoGame: function()
     {
-        this.game.state.start('Game');
+		// FIXME FIX: Why is this functions still called if the game is no longer in the main menu?
+		this.game.state.start('Game');
     },
 
     musicMutechange: function()
