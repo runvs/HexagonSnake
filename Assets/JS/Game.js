@@ -182,14 +182,6 @@ HexagonSnake.Game.prototype =
         this.currentLevel = 0;
         this.remainingHexagonsForThisLevel = 5;
 
-        // Mute on pause, unmute on resume
-        this.game.onPause.add(function()
-        {
-            this.previousMuteState = this.game.sound.mute;
-            this.game.sound.mute = true;
-        }, this);
-        this.game.onResume.add(function() { this.game.sound.mute = this.previousMuteState; }, this);
-
         // Switch into the game
         this.createText();
 
