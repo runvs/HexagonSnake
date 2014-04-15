@@ -104,6 +104,9 @@ HexagonSnake.Game.prototype =
         this.cursors.f = this.input.keyboard.addKey(Phaser.Keyboard.F);
         this.cursors.f.onDown.add(function() { this.stage.scale.startFullScreen(); }, this);
 
+		var space = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        space.onDown.add(this.doTouchInput, this);
+		
         // Create item
         this.item = this.add.sprite(0, 0, 'item');
         this.item.anchor.x = 0.25;
@@ -320,9 +323,19 @@ HexagonSnake.Game.prototype =
 		// manually fix the Score text
 		this.playerItemText.setText(this.config.SCORE_MULTIPLIER * this.playerItemCounter + ' ' + i18n[HexagonSnake.lang][1]);
     },
-
+	
+	restartGame :function()
+	{
+		this.playerItemCounter = 0;
+		this.currentLevel = 0;
+		this.remainingHexagonsForThisLevel = 5;
+		this.remainingHexagonText.setText('Level ' + this.currentLevel + '  ' + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12]);
+		this.resetGame();
+		
+	},
     resetGame: function()
     {
+		console.log("reset");
         this.playerTween.stop();
         this.hexagonTween.stop();
         this.disabledHexagonTween.stop();
@@ -347,6 +360,9 @@ HexagonSnake.Game.prototype =
             { x: 4, y: 2},
             { x: 4, y: 1}
         ];
+		
+		this.player1Direction = this.DirectionEnum.SOUTH;
+		
 		this.playerGroup.removeAll();
 		this.repositionPlayerSprites();
         
@@ -360,11 +376,11 @@ HexagonSnake.Game.prototype =
 		
 		
         this.isGameOver = false;
+		this.tweensFinished = true;
         this.gameOverText.setText('');
 
         this.getNewRandomItemPosition();
 
-		this.player1Direction = this.DirectionEnum.SOUTH;
     },
 
     createText: function()
@@ -380,7 +396,7 @@ HexagonSnake.Game.prototype =
         this.playerItemText.anchor.setTo(0, 0.5);
         this.playerItemText.setText('');
 
-        this.remainingHexagonText = this.add.text(this.game.width - textLeftMargin, textTopMargin, '' + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12] , {
+        this.remainingHexagonText = this.add.text(this.game.width - textLeftMargin, textTopMargin, 'Level ' + this.currentLevel + '  ' + this.remainingHexagonsForThisLevel + ' ' + i18n[HexagonSnake.lang][12] , {
             font: '20px Arial',
             fill: ' #6088ff',
             align: 'right'
@@ -416,6 +432,11 @@ HexagonSnake.Game.prototype =
 
         if(this.isGameOver)
         {
+			if(typeof(pointer.x) == 'undefined' || typeof(pointer.y) == 'undefined')
+			{
+				this.restartGame();
+			}
+			
             if(pointer.x < this.twitterButton.x - this.twitterButton.width * 2
             || pointer.x > this.twitterButton.x + this.twitterButton.width * 2)
             {
@@ -428,7 +449,7 @@ HexagonSnake.Game.prototype =
 						if(pointer.y < this.muteButton.y - this.muteButton.width * 2
 						|| pointer.y > this.muteButton.y + this.muteButton.width * 2)
 						{
-							this.resetGame();
+							this.restartGame();
 						}
 					}
                 }
@@ -693,8 +714,10 @@ HexagonSnake.Game.prototype =
 
     doPlayerMovement: function()
     {
+		//console.log(this.time.now);
         if(this.time.now > this.movementTimer && !this.isGameOver && this.tweensFinished)
         {
+			console.log("playerMovement");
             this.movementTimer = this.time.now + this.config.MOVEMENT_INCREMENT_CURRENT;
             this.numberOfDirectionChangesInCurrentMovement = 0;
 
