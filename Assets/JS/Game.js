@@ -126,7 +126,7 @@ HexagonSnake.Game.prototype =
         this.muteButton.anchor.setTo(1, 0);
         this.muteButton.visible = true;
 
-        this.twitterButton = this.add.button(this.game.width / 2, this.game.height / 2 + 45 * 2, 'twitter', this.tweetScore);
+        this.twitterButton = this.add.button(this.game.width / 2, this.game.height / 2 + 45 * 2, 'twitter', this.tweetScore, this);
         this.twitterButton.anchor.setTo(0.5, 0.5);
         this.twitterButton.visible = false;
 
