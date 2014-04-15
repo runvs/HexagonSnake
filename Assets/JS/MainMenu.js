@@ -13,7 +13,6 @@ HexagonSnake.MainMenu.prototype =
 
     create: function()
     {
-
         HexagonSnake.music = this.add.audio('music');
         HexagonSnake.music.play('', 0, 1, true);
 
@@ -45,7 +44,16 @@ HexagonSnake.MainMenu.prototype =
         this.input.onDown.add(this.doTouchInput, this);
         
         var space = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        space.onDown.add(this.switchIntoGame, this);
+        space.onDown.addOnce(this.switchIntoGame, this);
+
+
+        // Mute on pause, unmute on resume
+        this.game.onPause.add(function()
+        {
+            this.previousMuteState = this.game.sound.mute;
+            this.game.sound.mute = true;
+        }, this);
+        this.game.onResume.add(function() { this.game.sound.mute = this.previousMuteState; }, this);
     },
 
     doTouchInput: function(pointer)
@@ -61,7 +69,7 @@ HexagonSnake.MainMenu.prototype =
     switchIntoGame: function()
     {
 		// FIXME FIX: Why is this functions still called if the game is no longer in the main menu?
-		this.game.state.start('Game');
+		this.game.state.start('Game');	
     },
 
     musicMutechange: function()
