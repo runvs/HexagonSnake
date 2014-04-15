@@ -45,6 +45,15 @@ HexagonSnake.MainMenu.prototype =
         
         var space = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         space.onDown.addOnce(this.switchIntoGame, this);
+
+
+        // Mute on pause, unmute on resume
+        this.game.onPause.add(function()
+        {
+            this.previousMuteState = this.game.sound.mute;
+            this.game.sound.mute = true;
+        }, this);
+        this.game.onResume.add(function() { this.game.sound.mute = this.previousMuteState; }, this);
     },
 
     doTouchInput: function(pointer)

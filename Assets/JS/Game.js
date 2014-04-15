@@ -185,14 +185,6 @@ HexagonSnake.Game.prototype =
         this.currentLevel = 0;
         this.remainingHexagonsForThisLevel = 5;
 
-        // Mute on pause, unmute on resume
-        this.game.onPause.add(function()
-        {
-            this.previousMuteState = this.game.sound.mute;
-            this.game.sound.mute = true;
-        }, this);
-        this.game.onResume.add(function() { this.game.sound.mute = this.previousMuteState; }, this);
-
         // Switch into the game
         this.createText();
 
@@ -717,7 +709,6 @@ HexagonSnake.Game.prototype =
 		//console.log(this.time.now);
         if(this.time.now > this.movementTimer && !this.isGameOver && this.tweensFinished)
         {
-			console.log("playerMovement");
             this.movementTimer = this.time.now + this.config.MOVEMENT_INCREMENT_CURRENT;
             this.numberOfDirectionChangesInCurrentMovement = 0;
 
